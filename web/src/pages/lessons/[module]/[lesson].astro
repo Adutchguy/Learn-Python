@@ -1,0 +1,124 @@
+---
+import { render } from "astro:content";
+import Base from "../../../layouts/Base.astro";
+import { loadCourse, flattenLessons, readExercise, pyodideVersion } from "../../../lib/course";
+import { url, REPO_URL } from "../../../lib/paths";
+
+export async function getStaticPaths() {
+  const modules = await loadCourse();
+  const lessons = flattenLessons(modules);
+  return lessons.map((lesson, i) => ({
+    params: { module: lesson.moduleSlug, lesson: lesson.lessonSlug },
+    props: {
+      lesson,
+      module: modules.find((m) => m.slug === lesson.moduleSlug)!,
+      previous: lessons[i - 1] ?? null,
+      next: lessons[i + 1] ?? null,
+    },
+  }));
+}
+
+const { lesson, module: mod, previous, next } = Astro.props;
+const { Content } = await render(lesson.entry);
+const exercise = readExercise(lesson.id);
+
+const lessonData = {
+  id: lesson.id,
+  starter: exercise.starter,
+  solution: exercise.solution,
+  tests: exercise.tests,
+  hints: lesson.hints,
+  localOnly: lesson.localOnly,
+  nextHref: next ? next.href : null,
+  python: {
+    workerUrl: url("pyodide-worker.js"),
+    indexURL: `https://cdn.jsdelivr.net/pyodide/v${pyodideVersion()}/full/`,
+    runnerUrl: url("py/learn_runner.py"),
+  },
+};
+// Safe to embed in a <script type="application/json"> tag.
+const lessonJson = JSON.stringify(lessonData).replace(/</g, "\\u003c");
+---
+
+<Base title={`${lesson.title} · Learn Python`}>
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href={url()}>Course</a> <span aria-hidden="true">›</span> {mod.title}
+  </nav>
+
+  <div class="lesson-layout">
+    <article class="lesson">
+      <h1>{lesson.title}</h1>
+      <p class="muted">About {lesson.minutes} minutes</p>
+      <div class="prose">
+        <Content />
+      </div>
+      <nav class="lesson-nav" aria-label="Lesson navigation">
+        {previous ? <a href={previous.href}>← {previous.title}</a> : <span />}
+        {next ? <a href={next.href}>{next.title} →</a> : <span />}
+      </nav>
+    </article>
+
+    <section class="workspace" aria-label="Practice area">
+      {
+        lesson.localOnly ? (
+          <div class="notice">
+            <p>
+              <strong>This lesson needs your own computer.</strong> It uses features that browsers cannot provide. Clone
+              the <a href={REPO_URL}>repository</a> and follow the instructions in{" "}
+              <code>exercises/{lesson.id}/LESSON.md</code>.
+            </p>
+          </div>
+        ) : (
+          <>
+            <h2 class="sr-only">Practice</h2>
+            <div id="editor" class="editor"></div>
+            <p class="muted small">Tip: press Ctrl/⌘ + Enter to run. Press Esc, then Tab, to move out of the editor.</p>
+
+            <details class="stdin-box">
+              <summary>Input for <code>input()</code></summary>
+              <label for="stdin" class="small muted">One line for each time your program asks for input.</label>
+              <textarea id="stdin" rows="3" spellcheck="false"></textarea>
+            </details>
+
+            <div class="row buttons">
+              <button id="btn-run" type="button" class="button primary">Run ▶</button>
+              <button id="btn-check" type="button" class="button">Check ✔</button>
+              <button id="btn-stop" type="button" class="button danger" hidden>
+                Stop ■
+              </button>
+              <button id="btn-reset" type="button" class="button subtle">
+                Reset code
+              </button>
+            </div>
+            <p id="status" class="muted small" role="status" aria-live="polite" data-state="loading">
+              Loading Python…
+            </p>
+
+            <h3>Output</h3>
+            <pre id="output" class="output" aria-live="polite" tabindex="0" />
+
+            <div id="banner" class="banner" role="status" hidden />
+            <ul id="results" class="results" aria-live="polite" />
+
+            <h3>Need help?</h3>
+            <ol id="hint-list" class="hints" />
+            <div class="row">
+              <button id="btn-hint" type="button" class="button">
+                Show hint 1 of 3
+              </button>
+              <button id="btn-solution" type="button" class="button subtle" disabled>
+                Show the solution
+              </button>
+            </div>
+            <div id="solution-box" hidden />
+          </>
+        )
+      }
+    </section>
+  </div>
+
+  <script id="lesson-data" type="application/json" set:html={lessonJson} />
+  <script>
+    import "../../../scripts/lesson-page";
+  </script>
+</Base>

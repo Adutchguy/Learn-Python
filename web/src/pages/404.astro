@@ -1,0 +1,12 @@
+---
+import Base from "../layouts/Base.astro";
+import { url } from "../lib/paths";
+---
+
+<Base title="Page not found · Learn Python">
+  <section class="hero">
+    <h1>That page does not exist.</h1>
+    <p class="lead">The lesson may have moved. Head back to the course to find it.</p>
+    <p><a class="button primary" href={url()}>Back to the course</a></p>
+  </section>
+</Base>

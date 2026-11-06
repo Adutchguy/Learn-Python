@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  content:
+    name: Lessons and exercises
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.13"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Validate lesson files
+        run: python tools/validate_content.py
+      - name: Local-track exercises are up to date
+        run: python tools/build_exercises.py --check
+      - name: Every solution passes and every starter fails (real pytest)
+        run: python tools/check_solutions.py
+      - name: Tooling tests
+        run: python -m pytest tools/tests
+
+  web:
+    name: Website and in-browser runner
+    runs-on: ubuntu-latest
+    env:
+      ASTRO_TELEMETRY_DISABLED: "1"
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - name: Runner behaves like pytest for every lesson (real Pyodide)
+        run: npm test
+      - name: Build the site
+        run: npm run build

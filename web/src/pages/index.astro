@@ -1,0 +1,80 @@
+---
+import Base from "../layouts/Base.astro";
+import { loadCourse, flattenLessons } from "../lib/course";
+import { REPO_URL } from "../lib/paths";
+
+const modules = await loadCourse();
+const all = flattenLessons(modules);
+const first = all[0];
+const totalMinutes = all.reduce((sum, l) => sum + l.minutes, 0);
+---
+
+<Base title="Learn Python: free interactive lessons in your browser">
+  <section class="hero">
+    <h1>Learn Python, for free.</h1>
+    <p class="lead">
+      Short lessons you can run right here in your browser. Write real code in the first two minutes, get instant
+      feedback, and build up one small step at a time. No sign-up and nothing to install.
+    </p>
+    <p class="cta">
+      {first && <a id="start-link" class="button primary large" href={first.href}>Start with lesson 1</a>}
+      <a class="button" href={`${REPO_URL}#work-on-your-own-computer`}>Prefer your own computer?</a>
+    </p>
+    <p id="progress-summary" class="muted" aria-live="polite"></p>
+  </section>
+
+  <section class="how">
+    <h2>How each lesson works</h2>
+    <ol class="steps">
+      <li><strong>Read</strong> a short explanation with an example.</li>
+      <li><strong>Try</strong> it: edit and run code in the built-in editor.</li>
+      <li><strong>Check</strong> your answer. Clear hints help when you are stuck.</li>
+    </ol>
+    <p class="muted">
+      Already comfortable with another language? A placement test and a fast track for programmers are coming soon.
+    </p>
+  </section>
+
+  <section>
+    <h2>The course</h2>
+    <p class="muted">{all.length} lessons so far, about {totalMinutes} minutes in total. More are on the way.</p>
+    {
+      modules.map((mod) => (
+        <div class="module">
+          <h3>
+            <span class="module-number">Module {mod.number}</span> {mod.title}
+          </h3>
+          <p class="muted">{mod.description}</p>
+          <ol class="lesson-list">
+            {mod.lessons.map((lesson) => (
+              <li data-lesson-id={lesson.id}>
+                <span class="check" aria-hidden="true" />
+                <a href={lesson.href}>{lesson.title}</a>
+                <span class="sr-status sr-only" />
+                <span class="muted minutes">{lesson.minutes} min</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ))
+    }
+  </section>
+
+  <section class="your-progress">
+    <h2>Your progress</h2>
+    <p class="muted">
+      Progress is saved only in this browser. Download a backup file to move to another device or keep it safe.
+    </p>
+    <p class="row">
+      <button id="btn-export" type="button" class="button">Download progress</button>
+      <button id="btn-import" type="button" class="button">Load progress file</button>
+      <button id="btn-reset-all" type="button" class="button subtle">Reset progress</button>
+      <input id="file-import" type="file" accept="application/json,.json" hidden />
+    </p>
+    <p id="progress-message" class="notice" role="status" aria-live="polite"></p>
+  </section>
+
+  <script>
+    import "../scripts/home-page";
+  </script>
+</Base>

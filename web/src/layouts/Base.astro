@@ -1,0 +1,42 @@
+---
+import "../styles/global.css";
+import { url, REPO_URL } from "../lib/paths";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+const { title, description = "Learn Python for free with short, interactive lessons that run in your browser." } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={description} />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" type="image/svg+xml" href={url("favicon.svg")} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header class="site-header">
+      <a class="brand" href={url()}>🐍 Learn Python</a>
+      <nav aria-label="Main">
+        <a href={url()}>Course</a>
+        <a href={REPO_URL}>GitHub</a>
+      </nav>
+    </header>
+    <main id="main">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <p>
+        Free and open source. Code is <a href={`${REPO_URL}/blob/main/LICENSE`}>MIT</a>; lessons are
+        <a href={`${REPO_URL}/blob/main/LICENSE-CONTENT.txt`}>CC BY-SA 4.0</a>. No accounts, no tracking: your progress
+        stays in this browser.
+      </p>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,4 @@
+# Everything a learner (local track) or contributor needs on the Python side.
+# Python 3.11 or newer.
+pytest>=8
+pyyaml>=6
