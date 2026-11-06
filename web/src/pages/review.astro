@@ -1,0 +1,65 @@
+---
+import Base from "../layouts/Base.astro";
+import { loadCourse, flattenLessons, loadReviewQuestions } from "../lib/course";
+import { url } from "../lib/paths";
+
+const lessons = flattenLessons(await loadCourse());
+const questions = loadReviewQuestions();
+
+const data = {
+  questions,
+  lessons: Object.fromEntries(lessons.map((l) => [l.id, { title: l.title, href: l.href }])),
+  courseHref: url(),
+};
+// Safe to embed in a <script type="application/json"> tag.
+const json = JSON.stringify(data).replace(/</g, "\\u003c");
+---
+
+<Base title="Review · Learn Python" description="Short review questions that bring back what you learned, just before you would forget it.">
+  <section class="placement review">
+    <h1>Review</h1>
+
+    <div id="intro">
+      <p class="lead">
+        Short questions about lessons you have finished, brought back at growing gaps (1, 3, 7, 14 and 30 days). Each quick
+        recall makes the lesson stick for longer than reading it again would.
+      </p>
+      <p id="review-status" class="notice" role="status" aria-live="polite"></p>
+      <p class="row">
+        <button id="btn-begin" type="button" class="button primary large" hidden>Start review</button>
+        <a id="link-course" class="button" href={url()}>Back to the course</a>
+      </p>
+      <p class="muted">Your review schedule is saved only in this browser, along with the rest of your progress.</p>
+    </div>
+
+    <div id="quiz" hidden>
+      <p id="quiz-progress" class="muted" aria-live="polite"></p>
+      <form id="question-form" novalidate>
+        <fieldset>
+          <legend id="q-prompt"></legend>
+          <pre id="q-code" class="q-code"><code></code></pre>
+          <p id="q-stdin" class="muted" hidden></p>
+          <div id="q-options" class="q-options"></div>
+        </fieldset>
+        <p class="row">
+          <button id="btn-check" type="submit" class="button primary">Check answer</button>
+          <button id="btn-unsure" type="button" class="button subtle">I'm not sure</button>
+        </p>
+      </form>
+      <div id="q-feedback" class="banner" role="status" aria-live="polite" hidden></div>
+      <p><button id="btn-next" type="button" class="button primary" hidden>Next question</button></p>
+    </div>
+
+    <div id="result" hidden>
+      <h2 id="result-title"></h2>
+      <div id="result-missed"></div>
+      <p id="result-text"></p>
+      <p id="result-actions" class="row"></p>
+    </div>
+  </section>
+
+  <script id="review-data" type="application/json" set:html={json} />
+  <script>
+    import "../scripts/review-page";
+  </script>
+</Base>

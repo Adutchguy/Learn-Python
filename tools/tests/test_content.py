@@ -92,3 +92,13 @@ def test_bad_folder_name_is_rejected(tmp_path):
     (course / "01-basics" / "01-demo").rename(course / "01-basics" / "Demo Lesson")
     _, problems = content.load_all(course)
     assert any("folder name" in p for p in problems)
+
+
+def test_bad_yaml_in_frontmatter_is_a_problem_not_a_crash():
+    bad = GOOD_LESSON_MD.replace("concepts: [demo]", "concepts: [*args]")
+    try:
+        content.split_frontmatter(bad)
+    except ValueError as exc:
+        assert "not valid YAML" in str(exc)
+    else:
+        raise AssertionError("expected a ValueError for invalid YAML")

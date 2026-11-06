@@ -479,3 +479,7 @@ main {
   border-color: var(--bad);
   background: var(--bad-bg);
 }
+
+.review-missed {
+  margin: 0.5rem 0 1rem;
+}

@@ -11,7 +11,7 @@ pytest in the local track. Real pytest is too heavy to ship to a browser, so thi
 implements the small slice of it that lesson tests are allowed to use:
 
 * plain ``test_*`` functions with ``assert`` statements
-* the ``capsys`` and ``monkeypatch`` fixtures (a subset of each)
+* the ``capsys``, ``monkeypatch`` and ``tmp_path`` fixtures (a subset of each)
 * ``pytest.raises``, ``pytest.approx`` and ``pytest.fail``
 
 Every test starts with a fresh ``import exercise`` that runs the learner's code, matching
@@ -30,8 +30,12 @@ import inspect
 import io
 import json
 import linecache
+import os
+import pathlib
 import re
+import shutil
 import sys
+import tempfile
 import traceback
 import types
 from collections import namedtuple
@@ -136,7 +140,7 @@ def run_program(source, stdin_text=""):
     namespace = {"__name__": "__main__", "__file__": EXERCISE_FILE}
     with _sandbox(str(stdin_text).splitlines(), out, out):
         try:
-            exec(compile(source, EXERCISE_FILE, "exec"), namespace)
+            exec(compile(source, EXERCISE_FILE, "exec", dont_inherit=True), namespace)
         except SystemExit:
             pass
         except BaseException as exc:  # noqa: BLE001 - we report every kind of failure
@@ -169,9 +173,18 @@ class _Capsys:
         return result
 
 
+class _Chdir:
+    def __init__(self, old):
+        self.old = old
+
+
 class _MonkeyPatch:
     def __init__(self):
         self._undo = []
+
+    def chdir(self, path):
+        self._undo.append(_Chdir(os.getcwd()))
+        os.chdir(os.fspath(path))
 
     def setattr(self, target, name=_NOTSET, value=_NOTSET, raising=True):
         if isinstance(target, str) and value is _NOTSET:  # setattr("module.attr", value)
@@ -196,7 +209,9 @@ class _MonkeyPatch:
     def undo(self):
         while self._undo:
             entry = self._undo.pop()
-            if len(entry) == 4:
+            if isinstance(entry, _Chdir):
+                os.chdir(entry.old)
+            elif len(entry) == 4:
                 mapping, key, old, _ = entry
                 if old is _NOTSET:
                     mapping.pop(key, None)
@@ -283,24 +298,30 @@ class _ExerciseFinder(importlib.abc.MetaPathFinder, importlib.abc.Loader):
 
     def exec_module(self, module):
         module.__dict__["__file__"] = EXERCISE_FILE
-        exec(compile(self._source, EXERCISE_FILE, "exec"), module.__dict__)
+        exec(compile(self._source, EXERCISE_FILE, "exec", dont_inherit=True), module.__dict__)
 
 
-def _build_fixtures(func, available):
+def _build_fixtures(func, available, tmp_dirs):
     kwargs = {}
     for name in inspect.signature(func).parameters:
-        if name not in available:
+        if name == "tmp_path":
+            folder = tempfile.mkdtemp(prefix="learn-python-")
+            tmp_dirs.append(folder)
+            kwargs[name] = pathlib.Path(folder)
+        elif name not in available:
             raise _UnsupportedFixture(
                 f"This lesson's check uses the pytest fixture {name!r}, which the browser "
                 "runner does not support yet. Please report this lesson."
             )
-        kwargs[name] = available[name]
+        else:
+            kwargs[name] = available[name]
     return kwargs
 
 
 def _run_one(name, func, source):
     out, err = _BoundedBuffer(), _BoundedBuffer()
     monkeypatch = _MonkeyPatch()
+    tmp_dirs = []
     finder = _ExerciseFinder(source)
     sys.modules.pop("exercise", None)
     sys.meta_path.insert(0, finder)
@@ -309,12 +330,14 @@ def _run_one(name, func, source):
     try:
         with _sandbox([], out, err):
             try:
-                kwargs = _build_fixtures(func, {"capsys": _Capsys(out, err), "monkeypatch": monkeypatch})
+                kwargs = _build_fixtures(func, {"capsys": _Capsys(out, err), "monkeypatch": monkeypatch}, tmp_dirs)
                 func(**kwargs)
             except BaseException as exc:  # noqa: BLE001
                 passed, message = False, _explain_test_failure(exc)
             finally:
                 monkeypatch.undo()  # must happen inside the sandbox so input() is restored properly
+                for folder in tmp_dirs:
+                    shutil.rmtree(folder, ignore_errors=True)
     finally:
         sys.meta_path.remove(finder)
         sys.modules.pop("exercise", None)
@@ -326,7 +349,7 @@ def run_tests(source, tests_source):
     namespace = {"__name__": "test_exercise"}
     with _fake_pytest():
         try:
-            exec(compile(tests_source, TEST_FILE, "exec"), namespace)
+            exec(compile(tests_source, TEST_FILE, "exec", dont_inherit=True), namespace)
         except BaseException as exc:  # noqa: BLE001
             broken = {
                 "name": "(loading checks)",

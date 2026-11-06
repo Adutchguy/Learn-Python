@@ -188,9 +188,39 @@ test("runner: pytest.raises and pytest.approx are available", () => {
 });
 
 test("runner: unsupported fixtures give a clear message instead of crashing", () => {
-  const [result] = runner.runTests("", "def test_tmp(tmp_path):\n    assert True, 'x'\n");
+  const [result] = runner.runTests("", "def test_tmp(request):\n    assert True, 'x'\n");
   assert.equal(result.passed, false);
-  assert.match(result.message, /tmp_path/);
+  assert.match(result.message, /request/);
+});
+
+test("runner: tmp_path gives a fresh writable folder and monkeypatch.chdir moves into it and back", () => {
+  const source = "from pathlib import Path\nPath('note.txt').write_text('hi')\nprint(Path('note.txt').read_text())\n";
+  const tests = [
+    "import os",
+    "from pathlib import Path",
+    "def test_a(tmp_path, monkeypatch, capsys):",
+    "    before = os.getcwd()",
+    "    monkeypatch.chdir(tmp_path)",
+    "    import exercise",
+    "    assert capsys.readouterr().out == 'hi\\n', 'program output'",
+    "    assert (tmp_path / 'note.txt').read_text() == 'hi', 'file was written in the temp folder'",
+    "    monkeypatch.undo()",
+    "    assert os.getcwd() == before, 'chdir is undone'",
+    "def test_b(tmp_path):",
+    "    assert list(tmp_path.iterdir()) == [], 'each test gets an empty folder'",
+    "    assert not Path('note.txt').exists(), 'nothing leaked into the working folder'",
+  ].join("\n");
+  const results = runner.runTests(source, tests);
+  assert.deepEqual(results.map((r) => r.passed), [true, true], JSON.stringify(results));
+});
+
+test("runner: learner code is not affected by the runner's own __future__ imports (type hints stay real types)", () => {
+  const source = "def f(x: int) -> str:\n    return str(x)\n";
+  const tests = "def test_hints():\n    import exercise\n    assert exercise.f.__annotations__ == {'x': int, 'return': str}, 'hints should be real types'\n";
+  const [result] = runner.runTests(source, tests);
+  assert.equal(result.passed, true, JSON.stringify(result));
+  const run = runner.runProgram("def f(x: int):\n    return x\nprint(f.__annotations__)\n", "");
+  assert.match(run.output, /<class 'int'>/, JSON.stringify(run));
 });
 
 test("runner: an input() that no check provided raises a clear error", () => {

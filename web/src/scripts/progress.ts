@@ -2,6 +2,8 @@
 // Storage can be unavailable (private mode, blocked cookies), so every access is guarded and
 // we fall back to memory for the rest of the page's life.
 
+import { DATE_PATTERN, MAX_BOX, nextEntry, type ReviewEntry } from "./review-logic";
+
 const KEY = "learn-python:progress:v1";
 const MAX_CODE_LENGTH = 50_000;
 
@@ -18,14 +20,16 @@ export interface LessonProgress {
 interface Progress {
   version: 1;
   lessons: Record<string, LessonProgress>;
+  /** Spaced-review schedule, by review-question id. */
+  review: Record<string, ReviewEntry>;
 }
 
-const blank = (): Progress => ({ version: 1, lessons: {} });
+const blank = (): Progress => ({ version: 1, lessons: {}, review: {} });
 let memory: Progress | null = null;
 
 function sanitize(raw: unknown): Progress | null {
   if (!raw || typeof raw !== "object") return null;
-  const data = raw as { version?: unknown; lessons?: unknown };
+  const data = raw as { version?: unknown; lessons?: unknown; review?: unknown };
   if (data.version !== 1 || !data.lessons || typeof data.lessons !== "object") return null;
   const clean = blank();
   for (const [id, value] of Object.entries(data.lessons as Record<string, unknown>)) {
@@ -39,6 +43,19 @@ function sanitize(raw: unknown): Progress | null {
       completedAt: typeof v.completedAt === "string" ? v.completedAt.slice(0, 40) : undefined,
       placedOut: v.placedOut === true ? true : undefined,
     };
+  }
+  if (data.review && typeof data.review === "object") {
+    for (const [id, value] of Object.entries(data.review as Record<string, unknown>)) {
+      if (!value || typeof value !== "object") continue;
+      const v = value as Record<string, unknown>;
+      if (typeof v.due !== "string" || !DATE_PATTERN.test(v.due)) continue;
+      if (!Number.isInteger(v.box) || (v.box as number) < 0 || (v.box as number) > MAX_BOX) continue;
+      clean.review[id] = {
+        box: v.box as number,
+        due: v.due,
+        seen: Number.isFinite(v.seen) ? Math.max(0, Math.floor(v.seen as number)) : 0,
+      };
+    }
   }
   return clean;
 }
@@ -89,6 +106,21 @@ export function markPlacedOut(ids: string[]): number {
   }
   persist(progress);
   return changed;
+}
+
+/** Record an answer to a review question and schedule its next appearance. */
+export function recordReview(id: string, correct: boolean, today: string): ReviewEntry {
+  const progress = loadProgress();
+  const entry = nextEntry(progress.review[id], correct, today);
+  progress.review[id] = entry;
+  persist(progress);
+  return entry;
+}
+
+/** Lessons finished by actually doing them (lessons skipped by the placement test do not count). */
+export function completedLessonIds(): Set<string> {
+  const lessons = loadProgress().lessons;
+  return new Set(Object.keys(lessons).filter((id) => lessons[id].done && !lessons[id].placedOut));
 }
 
 export function exportProgress(): string {

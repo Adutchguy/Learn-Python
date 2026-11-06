@@ -1,11 +1,29 @@
-import { exportProgress, importProgress, loadProgress, resetProgress } from "./progress";
+import { completedLessonIds, exportProgress, importProgress, loadProgress, resetProgress } from "./progress";
+import { dueQuestions, localDateString } from "./review-logic";
 
 const lessonEls = Array.from(document.querySelectorAll<HTMLElement>("[data-lesson-id]"));
 const summary = document.getElementById("progress-summary");
 const startLink = document.getElementById("start-link") as HTMLAnchorElement | null;
 const message = document.getElementById("progress-message");
 
+const reviewLink = document.getElementById("review-link") as HTMLAnchorElement | null;
+const reviewQuestions: { id: string; lesson: string }[] = JSON.parse(
+  document.getElementById("review-index")?.textContent ?? "[]",
+);
+
+function refreshReview() {
+  if (!reviewLink) return;
+  const due = dueQuestions(reviewQuestions, {
+    completed: completedLessonIds(),
+    entries: loadProgress().review,
+    today: localDateString(new Date()),
+  }).length;
+  reviewLink.hidden = due === 0;
+  reviewLink.textContent = `Review: ${due} question${due === 1 ? "" : "s"} due`;
+}
+
 function refresh() {
+  refreshReview();
   const progress = loadProgress();
   let done = 0;
   let skipped = 0;

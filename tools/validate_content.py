@@ -11,6 +11,7 @@ import sys
 
 from content import load_all
 from placement import PLACEMENT_FILE, load_questions, validate_questions
+from review import REVIEW_FILE, load_review_questions, validate_review
 
 
 def main() -> int:
@@ -27,6 +28,17 @@ def main() -> int:
     else:
         problems.append("placement/questions.json is missing")
 
+    review = []
+    if REVIEW_FILE.exists():
+        try:
+            review = load_review_questions()
+        except (ValueError, KeyError) as exc:
+            problems.append(f"review/questions.json: could not be read ({exc})")
+        else:
+            problems.extend(validate_review(review, lessons))
+    else:
+        problems.append("review/questions.json is missing")
+
     if problems:
         print(f"Found {len(problems)} problem(s) in content/:\n")
         for problem in problems:
@@ -35,7 +47,7 @@ def main() -> int:
     modules = {lesson.module.slug for lesson in lessons}
     print(
         f"OK: {len(lessons)} lesson(s) in {len(modules)} module(s) are valid; "
-        f"{len(questions)} placement question(s) verified by running their code."
+        f"{len(questions)} placement and {len(review)} review question(s) verified by running their code."
     )
     return 0
 

@@ -28,7 +28,7 @@ EXERCISES = ROOT / "exercises"
 
 LESSON_FILES = ("lesson.md", "starter.py", "solution.py", "test_exercise.py")
 # Folders inside content/ that hold course-wide material rather than a module of lessons.
-NON_COURSE_DIRS = {"placement"}
+NON_COURSE_DIRS = {"placement", "review"}
 SLUG_RE = re.compile(r"^\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*$")
 REQUIRED_HEADINGS = ("## Your turn", "## Recap")
 HINT_COUNT = 3
@@ -63,7 +63,13 @@ def split_frontmatter(text: str) -> tuple[dict, str]:
     end = text.find("\n---\n", 4)
     if end == -1:
         raise ValueError("frontmatter block is not closed with '---'")
-    meta = yaml.safe_load(text[4:end]) or {}
+    try:
+        meta = yaml.safe_load(text[4:end]) or {}
+    except yaml.YAMLError as exc:
+        first_line = str(exc).strip().splitlines()[0]
+        raise ValueError(
+            f"frontmatter is not valid YAML ({first_line}). Quote values that contain ':', '*' or '#'."
+        ) from exc
     if not isinstance(meta, dict):
         raise ValueError("frontmatter must be a YAML mapping")
     return meta, text[end + 5 :]

@@ -30,6 +30,8 @@ hints:                               # exactly three, each a little more reveali
 ---
 ```
 
+Quote any frontmatter value that contains `:`, `*` or `#` (for example `concepts: ["*args"]`); the validator reports invalid YAML with a hint.
+
 Optional: `broken_starter: true` allows a `starter.py` that does not even parse (only for lessons about fixing errors). Unknown keys are rejected.
 
 ## Lesson body
@@ -77,10 +79,11 @@ Rules:
 |---|---|
 | `test_*` functions, `assert` | |
 | `capsys` fixture | `capsys.readouterr()` with `.out` / `.err` |
-| `monkeypatch` fixture | `setattr("module.attr", value)`, `setattr(obj, "name", value)`, `setitem`; undone after each test |
+| `monkeypatch` fixture | `setattr("module.attr", value)`, `setattr(obj, "name", value)`, `setitem`, `chdir(path)`; undone after each test |
+| `tmp_path` fixture | a fresh empty temporary folder (a `pathlib.Path`), removed after the test. Write file lessons as functions that take a path so the checks never touch the learner's own files |
 | `pytest.raises`, `pytest.approx`, `pytest.fail` | `approx` handles numbers only |
 
-Anything else (`tmp_path`, `parametrize`, plugins, ...) works locally but **not in the browser**. If a lesson needs it, either rewrite the test to avoid it or mark the lesson `local_only: true`.
+Anything else (`parametrize`, `request`, plugins, ...) works locally but **not in the browser**. If a lesson needs it, either rewrite the test to avoid it or mark the lesson `local_only: true`.
 
 ### Testing `input()`
 
@@ -106,3 +109,12 @@ The placement test lives in `content/placement/questions.json`. Each question is
 - Options are plain strings; use `\n` for options that print several lines. Add `"stdin"` if the program reads input. Use `"kind": "error"` when the question is "which error is this?", and list the exception name as the right option.
 - Every question needs an `"explanation"` that teaches, in one or two sentences.
 - You do not need to work out the answer by hand: `python tools/validate_content.py` runs each program and fails if the answer key does not match what Python really prints.
+
+## Review questions
+
+Each lesson (except projects and the orientation lesson) needs one or two questions in `content/review/questions.json`. They feed the spaced-review queue, so aim for *retrieval of the key idea*, not trivia:
+
+- Same format as the placement questions, but every question needs a `lesson`; keep the file in course order.
+- Prefer short programs whose output shows the idea (and the usual misconception as a wrong option). Use `"kind": "error"` for "which error is this?".
+- You do not work out the answer by hand: `python tools/validate_content.py` runs the code and fails if the key is wrong. CI also fails if a lesson has no review question.
+

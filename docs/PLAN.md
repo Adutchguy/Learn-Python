@@ -2,7 +2,7 @@
 
 **Goal:** a free, open-source way for anyone to fully learn Python as effectively and quickly as possible, with no cost and no account.
 
-**Status:** M0 (scaffold), M1 (engine) and M2 (modules 0-2, placement test v1, first project) are built: 16 lessons. Next: M3 (data structures, functions, text & files, spaced review).
+**Status:** M0 (scaffold), M1 (engine), M2 (modules 0-2, placement test v1, first project) and M3 (modules 3-5 and the spaced-review queue) are built: 38 lessons. Next: M4 (errors, modules & tooling, OOP, the `learn` CLI).
 
 **Decisions so far (from kickoff):**
 - Delivery: **both** a no-install browser app **and** a clone-and-run repo track
@@ -74,13 +74,15 @@ Learn-Python/
 
 ## 3. Placement path
 
-> **Built (M2, v1):** a "what does this print?" quiz at `/placement/` with 18 multiple-choice questions in course order (15 on published lessons, 3 beyond them: lists, dicts, functions). It stops after two misses, recommends the lesson of the first miss, and can mark earlier lessons as skipped (`placedOut` in progress; the orientation lesson is never skipped). Every answer key is verified by running the code in CI (`tools/placement.py`). Still to do from the list below: the landing choice, tiny coding tasks, per-module checkpoints, and the programmers' fast-track.
+> **Built (M2, v1):** a "what does this print?" quiz at `/placement/` with 27 multiple-choice questions in course order (25 on published lessons, 2 beyond them: exceptions and classes). It stops after two misses, recommends the lesson of the first miss, and can mark earlier lessons as skipped (`placedOut` in progress; the orientation lesson is never skipped). Every answer key is verified by running the code in CI (`tools/placement.py`). Still to do from the list below: the landing choice, tiny coding tasks, per-module checkpoints, and the programmers' fast-track.
 
 1. **Landing choice:** "I'm new to programming" / "I know another language" / "Test me".
 2. **Diagnostic (~15–20 min, adaptive):** short multiple-choice, "what does this print?", and 3–4 tiny coding tasks. Questions are tagged by concept.
 3. **Result:** a recommended starting module and a personalised map (skipped / review / learn). Always overridable.
 4. **Fast-track for programmers:** "Python for people who already code" — compact lessons mapping familiar concepts (types, scope, loops, classes, errors) to Python idioms, then it joins the main path at Functions/Data Structures.
 5. **Module checkpoints:** passing a short checkpoint test marks a whole module as done.
+
+> **Review queue built (M3):** `content/review/questions.json` holds one or two "what does this print?" questions per lesson (projects and the orientation lesson are exempt; CI checks the coverage and runs every answer key). `/review/` asks the questions from lessons the learner really completed (not ones skipped by the placement test) on a Leitner schedule: a right answer moves a question up a box (gaps of 1, 3, 7, 14, then 30 days), a wrong or "not sure" answer sends it back to box 0 (tomorrow). Sessions are capped at 10 questions. The schedule lives in the same browser progress as everything else and is included in the backup file. Still to do from principle 5: interleaved module quizzes, and a typed-code review task.
 
 ## 4. Curriculum (core ≈ 66 lessons + 4 projects)
 
@@ -89,8 +91,8 @@ Learn-Python/
 | 0 | Start Here | How this works, running code | — |
 | 1 | Foundations (9) | Hello world, variables, reading error messages, types, input & conversion, arithmetic, strings, f-strings, booleans & comparisons | — |
 | 2 | Control Flow (6) | `if/elif/else`, `while`, `for`, `range`, `break/continue`, nested logic | Number-guessing game |
-| 3 | Data Structures (8) | Lists, tuples, dicts, sets, slicing, sorting, comprehensions, choosing the right structure | — |
-| 4 | Functions (7) | Defining, params/args/kwargs, return, scope, lambdas, recursion, docstrings & type hints | Text-adventure / quiz engine |
+| 3 | Data Structures (8) | Lists, looping, slicing, sorting, tuples & unpacking, dicts, sets & choosing the right structure, comprehensions | — |
+| 4 | Functions (8) | Defining, return, defaults/args/kwargs, scope & mutation, lambdas, recursion, docstrings & type hints | Quiz engine |
 | 5 | Text & Files (6) | String methods, file I/O, `pathlib`, CSV, JSON, regex basics | — |
 | 6 | Errors & Debugging (5) | Exceptions, `try/except`, raising, debugging strategies, `logging`, context managers | Expense-tracker CLI |
 | 7 | Modules & Tooling (6) | Imports, stdlib tour (`collections`, `itertools`, `datetime`, `random`), venvs, `pip`, project layout | — |
@@ -139,7 +141,8 @@ Resolved (all recommendations accepted):
 Findings from building M1:
 
 - Current Pyodide releases do not support classic web workers, so the browser worker is a module worker that loads `pyodide.mjs`.
-- Lesson tests use real pytest locally and a small compatible runner in the browser (`capsys`, `monkeypatch`, `pytest.raises/approx/fail`); this subset is documented in `docs/CONTENT-STYLE-GUIDE.md`.
+- A compile detail that mattered: the browser runner must compile learner and test code with `dont_inherit=True`, otherwise the runner's own `from __future__ import annotations` silently turns learners' type hints into strings.
+- Lesson tests use real pytest locally and a small compatible runner in the browser (`capsys`, `monkeypatch` incl. `chdir`, `tmp_path`, `pytest.raises/approx/fail`); this subset is documented in `docs/CONTENT-STYLE-GUIDE.md`.
 
 ## 8. Risks & mitigations
 

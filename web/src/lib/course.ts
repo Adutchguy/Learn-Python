@@ -100,3 +100,8 @@ export function loadPlacementQuestions(): PlacementQuestion[] {
   const file = path.join(CONTENT_DIR, "placement", "questions.json");
   return JSON.parse(fs.readFileSync(file, "utf8")).questions as PlacementQuestion[];
 }
+
+export function loadReviewQuestions(): PlacementQuestion[] {
+  const file = path.join(CONTENT_DIR, "review", "questions.json");
+  return JSON.parse(fs.readFileSync(file, "utf8")).questions as PlacementQuestion[];
+}

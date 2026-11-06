@@ -1,0 +1,525 @@
+{
+  "questions": [
+    {
+      "id": "01-hello-world-1",
+      "lesson": "01-foundations/01-hello-world",
+      "prompt": "What does this program print?",
+      "code": "print(\"Hello\", \"Python\")",
+      "options": [
+        "Hello Python",
+        "HelloPython",
+        "Hello, Python",
+        "Hello\nPython"
+      ],
+      "answer": 0,
+      "explanation": "print() puts a single space between the values you give it."
+    },
+    {
+      "id": "02-variables-1",
+      "lesson": "01-foundations/02-variables",
+      "prompt": "What does this program print?",
+      "code": "a = 5\nb = a\na = 9\nprint(b)",
+      "options": [
+        "9",
+        "5",
+        "14",
+        "a"
+      ],
+      "answer": 1,
+      "explanation": "b copied the value 5 when it was assigned. Changing a later does not change b."
+    },
+    {
+      "id": "03-reading-error-messages-1",
+      "lesson": "01-foundations/03-reading-error-messages",
+      "prompt": "This program stops with an error. Which kind?",
+      "code": "number = int(\"abc\")\nprint(number)",
+      "kind": "error",
+      "options": [
+        "SyntaxError",
+        "TypeError",
+        "ValueError",
+        "NameError"
+      ],
+      "answer": 2,
+      "explanation": "int() received text that is not a number, so it raises a ValueError. The last line of a traceback names the error."
+    },
+    {
+      "id": "04-data-types-1",
+      "lesson": "01-foundations/04-data-types",
+      "prompt": "What does this program print?",
+      "code": "print(type(\"5\"), type(5.0))",
+      "options": [
+        "<class 'int'> <class 'float'>",
+        "<class 'str'> <class 'int'>",
+        "<class 'float'> <class 'str'>",
+        "<class 'str'> <class 'float'>"
+      ],
+      "answer": 3,
+      "explanation": "Quotes make \"5\" text (str); the decimal point makes 5.0 a float."
+    },
+    {
+      "id": "05-input-and-conversion-1",
+      "lesson": "01-foundations/05-input-and-conversion",
+      "prompt": "The user types 4. What does this program print?",
+      "code": "n = int(input())\nprint(n * 3)",
+      "stdin": "4\n",
+      "options": [
+        "12",
+        "444",
+        "3",
+        "It causes an error"
+      ],
+      "answer": 0,
+      "explanation": "int() turns the typed text into a number, so n * 3 is 12. Without int(), \"4\" * 3 would repeat the text."
+    },
+    {
+      "id": "06-arithmetic-1",
+      "lesson": "01-foundations/06-arithmetic",
+      "prompt": "What does this program print?",
+      "code": "print(7 % 3, 2 ** 3)",
+      "options": [
+        "2 6",
+        "1 8",
+        "1 6",
+        "2 8"
+      ],
+      "answer": 1,
+      "explanation": "% is the remainder (7 = 2 * 3 + 1) and ** is the power (2 to the 3rd is 8)."
+    },
+    {
+      "id": "07-strings-1",
+      "lesson": "01-foundations/07-strings",
+      "prompt": "What does this program print?",
+      "code": "print(\"  ada \".strip().title() + \"!\")",
+      "options": [
+        "  Ada !",
+        "ada!",
+        "Ada!",
+        "Ada !"
+      ],
+      "answer": 2,
+      "explanation": "strip() removes the spaces at both ends, then title() capitalises: Ada, and the ! is added."
+    },
+    {
+      "id": "08-f-strings-1",
+      "lesson": "01-foundations/08-f-strings",
+      "prompt": "What does this program print?",
+      "code": "n = 3\nprint(f\"{n} + {n} = {n + n}\")",
+      "options": [
+        "{n} + {n} = {n + n}",
+        "3 + 3 = 33",
+        "n + n = 6",
+        "3 + 3 = 6"
+      ],
+      "answer": 3,
+      "explanation": "Anything inside braces in an f-string is evaluated, including calculations."
+    },
+    {
+      "id": "09-booleans-and-comparisons-1",
+      "lesson": "01-foundations/09-booleans-and-comparisons",
+      "prompt": "What does this program print?",
+      "code": "print(5 > 3 and not 2 == 2)",
+      "options": [
+        "False",
+        "True",
+        "5",
+        "It causes an error"
+      ],
+      "answer": 0,
+      "explanation": "2 == 2 is True, so not 2 == 2 is False; True and False is False."
+    },
+    {
+      "id": "01-if-else-1",
+      "lesson": "02-control-flow/01-if-else",
+      "prompt": "What does this program print?",
+      "code": "x = 7\nif x % 2 == 0:\n    print(\"even\")\nelse:\n    print(\"odd\")",
+      "options": [
+        "even",
+        "odd",
+        "even\nodd",
+        "7"
+      ],
+      "answer": 1,
+      "explanation": "7 % 2 is 1, not 0, so the if condition is false and the else block runs."
+    },
+    {
+      "id": "02-combined-and-nested-conditions-1",
+      "lesson": "02-control-flow/02-combined-and-nested-conditions",
+      "prompt": "What does this program print?",
+      "code": "a, b = 4, 9\nif a > 5 or b > 5 and a > b:\n    print(\"yes\")\nelse:\n    print(\"no\")",
+      "options": [
+        "yes",
+        "True",
+        "no",
+        "It causes an error"
+      ],
+      "answer": 2,
+      "explanation": "and binds tighter than or: a > 5 is False, and (b > 5 and a > b) is False too, so the else block runs."
+    },
+    {
+      "id": "03-while-loops-1",
+      "lesson": "02-control-flow/03-while-loops",
+      "prompt": "What does this program print?",
+      "code": "n = 1\nwhile n < 20:\n    n *= 3\nprint(n)",
+      "options": [
+        "20",
+        "9",
+        "81",
+        "27"
+      ],
+      "answer": 3,
+      "explanation": "n goes 1, 3, 9, 27. The loop stops as soon as n is no longer below 20, so it prints 27."
+    },
+    {
+      "id": "04-for-loops-and-range-1",
+      "lesson": "02-control-flow/04-for-loops-and-range",
+      "prompt": "What does this program print?",
+      "code": "total = 0\nfor i in range(1, 5):\n    total += i\nprint(total)",
+      "options": [
+        "10",
+        "15",
+        "6",
+        "4"
+      ],
+      "answer": 0,
+      "explanation": "range(1, 5) gives 1, 2, 3, 4 (the stop value is excluded), which add up to 10."
+    },
+    {
+      "id": "05-break-and-continue-1",
+      "lesson": "02-control-flow/05-break-and-continue",
+      "prompt": "What does this program print?",
+      "code": "for i in range(5):\n    if i == 3:\n        break\n    print(i)",
+      "options": [
+        "0\n1\n2\n3",
+        "0\n1\n2",
+        "0\n1\n2\n3\n4",
+        "3"
+      ],
+      "answer": 1,
+      "explanation": "break leaves the loop as soon as i is 3, before 3 is printed."
+    },
+    {
+      "id": "01-lists-1",
+      "lesson": "03-data-structures/01-lists",
+      "prompt": "What does this program print?",
+      "code": "items = [\"a\", \"b\"]\nitems.append(\"c\")\nprint(items[-1], len(items))",
+      "options": [
+        "b 2",
+        "c 2",
+        "c 3",
+        "a 3"
+      ],
+      "answer": 2,
+      "explanation": "append adds to the end, so the list has 3 items and index -1 is the last one: c."
+    },
+    {
+      "id": "01-lists-2",
+      "lesson": "03-data-structures/01-lists",
+      "prompt": "This program stops with an error. Which kind?",
+      "code": "nums = [1, 2, 3]\nprint(nums[3])",
+      "kind": "error",
+      "options": [
+        "KeyError",
+        "ValueError",
+        "NameError",
+        "IndexError"
+      ],
+      "answer": 3,
+      "explanation": "The valid indexes of a 3-item list are 0, 1 and 2, so index 3 raises an IndexError."
+    },
+    {
+      "id": "02-looping-over-lists-1",
+      "lesson": "03-data-structures/02-looping-over-lists",
+      "prompt": "What does this program print?",
+      "code": "for i, x in enumerate([\"a\", \"b\"], start=1):\n    print(i, x)",
+      "options": [
+        "1 a\n2 b",
+        "0 a\n1 b",
+        "a 1\nb 2",
+        "1 a 2 b"
+      ],
+      "answer": 0,
+      "explanation": "enumerate gives (position, item) pairs, and start=1 makes the positions begin at 1."
+    },
+    {
+      "id": "03-slicing-1",
+      "lesson": "03-data-structures/03-slicing",
+      "prompt": "What does this program print?",
+      "code": "s = [10, 20, 30, 40, 50]\nprint(s[1:4], s[::-1][0])",
+      "options": [
+        "[20, 30, 40, 50] 10",
+        "[20, 30, 40] 50",
+        "[10, 20, 30] 50",
+        "[20, 30] 50"
+      ],
+      "answer": 1,
+      "explanation": "s[1:4] stops before index 4. s[::-1] is the reversed list, whose first item is 50."
+    },
+    {
+      "id": "04-sorting-1",
+      "lesson": "03-data-structures/04-sorting",
+      "prompt": "What does this program print?",
+      "code": "w = [\"bb\", \"a\", \"ccc\"]\nprint(sorted(w, key=len, reverse=True)[0])",
+      "options": [
+        "a",
+        "bb",
+        "ccc",
+        "['ccc']"
+      ],
+      "answer": 2,
+      "explanation": "Sorting by length, longest first, puts \"ccc\" at index 0. [0] picks that single item."
+    },
+    {
+      "id": "05-tuples-and-unpacking-1",
+      "lesson": "03-data-structures/05-tuples-and-unpacking",
+      "prompt": "What does this program print?",
+      "code": "a, b = 1, 2\na, b = b, a + b\nprint(a, b)",
+      "options": [
+        "1 2",
+        "2 2",
+        "2 1",
+        "2 3"
+      ],
+      "answer": 3,
+      "explanation": "The right side is worked out first, (2, 1 + 2), and then unpacked into a and b together."
+    },
+    {
+      "id": "06-dictionaries-1",
+      "lesson": "03-data-structures/06-dictionaries",
+      "prompt": "What does this program print?",
+      "code": "d = {\"a\": 1}\nd[\"b\"] = d.get(\"b\", 10) + 1\nprint(d)",
+      "options": [
+        "{'a': 1, 'b': 11}",
+        "{'a': 1, 'b': 1}",
+        "{'a': 1}",
+        "{'a': 1, 'b': 10}"
+      ],
+      "answer": 0,
+      "explanation": ".get(\"b\", 10) returns the default 10 because there is no \"b\" yet, so the new value is 11."
+    },
+    {
+      "id": "07-sets-and-choosing-1",
+      "lesson": "03-data-structures/07-sets-and-choosing",
+      "prompt": "What does this program print?",
+      "code": "print(sorted({3, 1, 3, 2} & {2, 3, 4}))",
+      "options": [
+        "[1, 2, 3, 4]",
+        "[2, 3]",
+        "[2, 3, 3]",
+        "[1]"
+      ],
+      "answer": 1,
+      "explanation": "A set drops duplicates, and & keeps only items found in both sets: 2 and 3."
+    },
+    {
+      "id": "08-comprehensions-1",
+      "lesson": "03-data-structures/08-comprehensions",
+      "prompt": "What does this program print?",
+      "code": "print([n * 2 for n in range(5) if n % 2])",
+      "options": [
+        "[0, 2, 4, 6, 8]",
+        "[0, 4, 8]",
+        "[2, 6]",
+        "[1, 3]"
+      ],
+      "answer": 2,
+      "explanation": "The if keeps only odd n (1 and 3), and each kept n is doubled: [2, 6]."
+    },
+    {
+      "id": "01-defining-functions-1",
+      "lesson": "04-functions/01-defining-functions",
+      "prompt": "What does this program print?",
+      "code": "def hi(name):\n    print(\"Hi\", name)\n\nhi(\"Bo\")\nhi(\"Cy\")",
+      "options": [
+        "Hi name\nHi name",
+        "Hi Bo",
+        "Nothing: the function is only defined",
+        "Hi Bo\nHi Cy"
+      ],
+      "answer": 3,
+      "explanation": "Each call runs the body with a different argument, so it prints a line per call."
+    },
+    {
+      "id": "02-return-values-1",
+      "lesson": "04-functions/02-return-values",
+      "prompt": "What does this program print?",
+      "code": "def f(x):\n    print(x)\n\nresult = f(4)\nprint(result)",
+      "options": [
+        "4\nNone",
+        "4\n4",
+        "4",
+        "None"
+      ],
+      "answer": 0,
+      "explanation": "f prints 4 but has no return statement, so it returns None, which is what the second print shows."
+    },
+    {
+      "id": "03-default-and-keyword-arguments-1",
+      "lesson": "04-functions/03-default-and-keyword-arguments",
+      "prompt": "What does this program print?",
+      "code": "def f(a, b=2, *rest):\n    return a + b + len(rest)\n\nprint(f(1), f(1, 5, 9, 9))",
+      "options": [
+        "3 14",
+        "3 8",
+        "4 8",
+        "3 6"
+      ],
+      "answer": 1,
+      "explanation": "f(1) uses the default b=2, giving 3. In f(1, 5, 9, 9), b is 5 and rest holds two extra items: 1 + 5 + 2 = 8."
+    },
+    {
+      "id": "04-scope-and-mutation-1",
+      "lesson": "04-functions/04-scope-and-mutation",
+      "prompt": "What does this program print?",
+      "code": "x = \"outer\"\n\ndef f():\n    x = \"inner\"\n\nf()\nprint(x)",
+      "options": [
+        "inner",
+        "None",
+        "outer",
+        "It causes an error"
+      ],
+      "answer": 2,
+      "explanation": "Assigning inside a function creates a new local x. The outside x is not changed."
+    },
+    {
+      "id": "04-scope-and-mutation-2",
+      "lesson": "04-functions/04-scope-and-mutation",
+      "prompt": "What does this program print?",
+      "code": "def add(items):\n    items.append(1)\n\nmine = []\nadd(mine)\nadd(mine)\nprint(mine)",
+      "options": [
+        "[]",
+        "[1]",
+        "None",
+        "[1, 1]"
+      ],
+      "answer": 3,
+      "explanation": "The function received the caller's own list and changed it in place, so both calls added to it."
+    },
+    {
+      "id": "05-functions-as-values-and-lambdas-1",
+      "lesson": "04-functions/05-functions-as-values-and-lambdas",
+      "prompt": "What does this program print?",
+      "code": "print(sorted([\"bb\", \"a\", \"ccc\"], key=lambda s: -len(s)))",
+      "options": [
+        "['ccc', 'bb', 'a']",
+        "['a', 'bb', 'ccc']",
+        "['ccc', 'a', 'bb']",
+        "[3, 2, 1]"
+      ],
+      "answer": 0,
+      "explanation": "The lambda gives each word a key of minus its length, so the longest word has the smallest key and comes first."
+    },
+    {
+      "id": "06-recursion-1",
+      "lesson": "04-functions/06-recursion",
+      "prompt": "What does this program print?",
+      "code": "def f(n):\n    if n == 0:\n        return 0\n    return n + f(n - 1)\n\nprint(f(4))",
+      "options": [
+        "4",
+        "10",
+        "24",
+        "It never stops"
+      ],
+      "answer": 1,
+      "explanation": "f(4) = 4 + f(3) = 4 + 3 + 2 + 1 + f(0) = 10. The base case n == 0 ends the recursion."
+    },
+    {
+      "id": "07-docstrings-and-type-hints-1",
+      "lesson": "04-functions/07-docstrings-and-type-hints",
+      "prompt": "What does this program print?",
+      "code": "def f(x: int) -> str:\n    \"\"\"Return x.\"\"\"\n    return x\n\nprint(f(5) + 1)",
+      "options": [
+        "It causes an error because the hint says str",
+        "51",
+        "6",
+        "'6'"
+      ],
+      "answer": 2,
+      "explanation": "Type hints are not enforced when the code runs. f(5) returns the number 5, so 5 + 1 is 6."
+    },
+    {
+      "id": "01-string-methods-1",
+      "lesson": "05-text-and-files/01-string-methods",
+      "prompt": "What does this program print?",
+      "code": "words = \"  the quick fox \".split()\nprint(len(words), \"_\".join(words))",
+      "options": [
+        "5 the_quick_fox",
+        "3 _the_quick_fox_",
+        "3 the quick fox",
+        "3 the_quick_fox"
+      ],
+      "answer": 3,
+      "explanation": "split() with no argument ignores extra spaces and gives 3 words; join glues them with underscores."
+    },
+    {
+      "id": "02-reading-and-writing-files-1",
+      "lesson": "05-text-and-files/02-reading-and-writing-files",
+      "prompt": "What does this program print?",
+      "code": "with open(\"t.txt\", \"w\") as f:\n    f.write(\"a\\n\")\nwith open(\"t.txt\", \"a\") as f:\n    f.write(\"b\\n\")\nwith open(\"t.txt\") as f:\n    print(f.read().split())",
+      "options": [
+        "['a', 'b']",
+        "['b']",
+        "['a']",
+        "['a\\n', 'b\\n']"
+      ],
+      "answer": 0,
+      "explanation": "\"w\" creates the file with a; \"a\" then adds b to the end. Reading gives \"a\\nb\\n\", which split() turns into a list of two words."
+    },
+    {
+      "id": "03-paths-with-pathlib-1",
+      "lesson": "05-text-and-files/03-paths-with-pathlib",
+      "prompt": "What does this program print?",
+      "code": "from pathlib import Path\n\np = Path(\"data\") / \"notes.txt\"\nprint(p.stem, p.suffix)",
+      "options": [
+        "notes.txt txt",
+        "notes .txt",
+        "data .txt",
+        "notes txt"
+      ],
+      "answer": 1,
+      "explanation": "The stem is the file name without its ending (notes); the suffix is the ending including the dot (.txt)."
+    },
+    {
+      "id": "04-csv-files-1",
+      "lesson": "05-text-and-files/04-csv-files",
+      "prompt": "What does this program print?",
+      "code": "import csv\nimport io\n\nrows = list(csv.DictReader(io.StringIO(\"n,s\\nA,5\\nB,7\")))\nprint(rows[1][\"s\"] * 2)",
+      "options": [
+        "14",
+        "7 7",
+        "77",
+        "It causes an error"
+      ],
+      "answer": 2,
+      "explanation": "Values read from a CSV are text, so \"7\" * 2 repeats the text: 77. Convert with int() to calculate."
+    },
+    {
+      "id": "05-json-data-1",
+      "lesson": "05-text-and-files/05-json-data",
+      "prompt": "What does this program print?",
+      "code": "import json\n\nprint(json.dumps({\"ok\": True, \"n\": None}))",
+      "options": [
+        "{'ok': True, 'n': None}",
+        "{\"ok\": True, \"n\": None}",
+        "{\"ok\": \"true\", \"n\": \"null\"}",
+        "{\"ok\": true, \"n\": null}"
+      ],
+      "answer": 3,
+      "explanation": "JSON uses double quotes, true, false and null in place of Python's True, False and None."
+    },
+    {
+      "id": "06-regular-expressions-1",
+      "lesson": "05-text-and-files/06-regular-expressions",
+      "prompt": "What does this program print?",
+      "code": "import re\n\nprint(re.findall(r\"\\d+\", \"a1b22c333\"))",
+      "options": [
+        "['1', '22', '333']",
+        "[1, 22, 333]",
+        "['1', '2', '3']",
+        "['1', '22']"
+      ],
+      "answer": 0,
+      "explanation": "\\d+ matches each run of digits, and findall returns them as text: '1', '22' and '333'."
+    }
+  ]
+}

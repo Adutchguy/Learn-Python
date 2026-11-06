@@ -1,17 +1,6 @@
 import { markPlacedOut } from "./progress";
+import { askForAnswer, pickedOption, questionEls, renderQuestion, revealAnswer, type Question } from "./question-ui";
 
-interface Question {
-  id: string;
-  lesson: string | null;
-  topic?: string;
-  kind?: "output" | "error";
-  prompt: string;
-  code?: string;
-  stdin?: string;
-  options: string[];
-  answer: number;
-  explanation: string;
-}
 interface LessonRef {
   id: string;
   title: string;
@@ -31,12 +20,7 @@ const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as 
 const intro = $("intro");
 const quiz = $("quiz");
 const result = $("result");
-const form = $<HTMLFormElement>("question-form");
-const optionsEl = $("q-options");
-const feedback = $("q-feedback");
-const nextBtn = $<HTMLButtonElement>("btn-next");
-const checkBtn = $<HTMLButtonElement>("btn-check");
-const unsureBtn = $<HTMLButtonElement>("btn-unsure");
+const els = questionEls();
 
 let index = 0;
 let misses = 0;
@@ -47,66 +31,19 @@ function showQuestion() {
   const q = data.questions[index];
   answered = false;
   $("quiz-progress").textContent = `Question ${index + 1} of up to ${data.questions.length}`;
-  $("q-prompt").textContent = q.prompt;
-
-  const codeBlock = $("q-code");
-  codeBlock.hidden = !q.code;
-  codeBlock.querySelector("code")!.textContent = q.code ?? "";
-
-  const stdin = $("q-stdin");
-  stdin.hidden = q.stdin === undefined;
-  if (q.stdin !== undefined) stdin.textContent = `The user types: ${q.stdin.replace(/\n$/, "").replace(/\n/g, ", then ")}`;
-
-  optionsEl.replaceChildren();
-  q.options.forEach((text, i) => {
-    const label = document.createElement("label");
-    label.className = "q-option";
-    const input = document.createElement("input");
-    input.type = "radio";
-    input.name = "answer";
-    input.value = String(i);
-    const body = document.createElement("span");
-    body.className = "q-option-text";
-    body.textContent = text;
-    label.append(input, body);
-    optionsEl.append(label);
-  });
-
-  feedback.hidden = true;
-  feedback.className = "banner";
-  nextBtn.hidden = true;
-  checkBtn.disabled = false;
-  unsureBtn.disabled = false;
-  optionsEl.querySelector<HTMLInputElement>("input")?.focus();
+  renderQuestion(els, q);
 }
 
-function finishQuestion(correct: boolean, picked: number | null) {
+function finishQuestion(picked: number | null) {
   const q = data.questions[index];
   answered = true;
-  checkBtn.disabled = true;
-  unsureBtn.disabled = true;
-  optionsEl.querySelectorAll("input").forEach((el) => (el.disabled = true));
-
-  optionsEl.querySelectorAll<HTMLElement>(".q-option").forEach((label, i) => {
-    label.classList.toggle("is-answer", i === q.answer);
-    label.classList.toggle("is-wrong", picked === i && !correct);
-  });
-
+  const correct = revealAnswer(els, q, picked);
   if (!correct) {
     misses++;
     firstMiss ??= q;
   }
-  const lead = correct ? "Correct. " : picked === null ? "No problem. " : "Not quite. ";
-  const answerLine = correct ? "" : `The answer is ${q.options[q.answer].includes("\n") ? "the highlighted option" : `“${q.options[q.answer]}”`}. `;
-  feedback.textContent = `${lead}${answerLine}${q.explanation}`;
-  feedback.className = correct ? "banner success" : "banner try-again";
-  feedback.hidden = false;
-
   const last = index === data.questions.length - 1;
-  const stop = misses >= MAX_MISSES;
-  nextBtn.textContent = last || stop ? "See my result" : "Next question";
-  nextBtn.hidden = false;
-  nextBtn.focus();
+  els.next.textContent = last || misses >= MAX_MISSES ? "See my result" : "Next question";
 }
 
 function lessonIndex(id: string | null): number {
@@ -152,7 +89,7 @@ function showResult() {
   if (firstMiss === null) {
     title.textContent = "You know everything covered so far.";
     text.textContent =
-      "You answered every question correctly, including the ones that go beyond the lessons published so far. More lessons on lists, dictionaries and functions are on the way.";
+      "You answered every question correctly, including the ones that go beyond the lessons published so far. More lessons are on the way.";
     if (toSkip.length > 0) actions.append(skipButton(`Skip all ${toSkip.length} current lessons`));
     actions.append(link(data.courseHref, "Browse the course"));
     return;
@@ -188,25 +125,22 @@ $("btn-begin").addEventListener("click", () => {
   showQuestion();
 });
 
-form.addEventListener("submit", (event) => {
+els.form.addEventListener("submit", (event) => {
   event.preventDefault();
   if (answered) return;
-  const picked = form.querySelector<HTMLInputElement>("input[name=answer]:checked");
-  if (!picked) {
-    feedback.textContent = "Pick an answer, or choose “I'm not sure”.";
-    feedback.className = "banner try-again";
-    feedback.hidden = false;
+  const choice = pickedOption(els);
+  if (choice === null) {
+    askForAnswer(els);
     return;
   }
-  const choice = Number(picked.value);
-  finishQuestion(choice === data.questions[index].answer, choice);
+  finishQuestion(choice);
 });
 
-unsureBtn.addEventListener("click", () => {
-  if (!answered) finishQuestion(false, null);
+els.unsure.addEventListener("click", () => {
+  if (!answered) finishQuestion(null);
 });
 
-nextBtn.addEventListener("click", () => {
+els.next.addEventListener("click", () => {
   if (misses >= MAX_MISSES || index === data.questions.length - 1) {
     showResult();
     return;
