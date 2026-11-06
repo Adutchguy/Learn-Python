@@ -1,7 +1,7 @@
 ---
 title: Hello, World!
 minutes: 10
-prereqs: []
+prereqs: ["00-start/01-how-this-works"]
 concepts: [print, function call, string]
 local_only: false
 hints:

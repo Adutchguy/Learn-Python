@@ -121,7 +121,7 @@ function init() {
       renderResults(outcome);
       const allPassed = outcome.length > 0 && outcome.every((r) => r.passed);
       if (allPassed) {
-        updateLesson(data.id, { done: true, completedAt: new Date().toISOString(), code: code() });
+        updateLesson(data.id, { done: true, placedOut: false, completedAt: new Date().toISOString(), code: code() });
         showBanner(true);
       } else {
         const attempts = getLesson(data.id).attempts + 1;

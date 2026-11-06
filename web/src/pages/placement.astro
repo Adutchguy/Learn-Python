@@ -1,0 +1,69 @@
+---
+import Base from "../layouts/Base.astro";
+import { loadCourse, flattenLessons, loadPlacementQuestions } from "../lib/course";
+import { url } from "../lib/paths";
+
+const modules = await loadCourse();
+const lessons = flattenLessons(modules);
+const questions = loadPlacementQuestions();
+
+const data = {
+  questions,
+  lessons: lessons.map((l) => ({
+    id: l.id,
+    title: l.title,
+    href: l.href,
+    // The orientation lesson is never skipped: it explains how the site works.
+    skippable: !l.moduleSlug.startsWith("00-"),
+  })),
+  courseHref: url(),
+};
+// Safe to embed in a <script type="application/json"> tag.
+const json = JSON.stringify(data).replace(/</g, "\\u003c");
+---
+
+<Base title="Placement test · Learn Python" description="Find the right place to start learning Python with a short, friendly quiz.">
+  <section class="placement">
+    <h1>Placement test</h1>
+    <div id="intro">
+      <p class="lead">
+        Not sure where to start? Read a few short programs and say what each one prints. The questions get harder, and the
+        test stops after two misses, so it never takes long. It is not graded, and "I'm not sure" is always a fine answer.
+      </p>
+      <p class="muted">
+        Nothing is sent anywhere. Your answers are not saved. At the end you can choose to skip the lessons you already know.
+      </p>
+      <p><button id="btn-begin" type="button" class="button primary large">Begin</button></p>
+    </div>
+
+    <div id="quiz" hidden>
+      <p id="quiz-progress" class="muted" aria-live="polite"></p>
+      <form id="question-form" novalidate>
+        <fieldset>
+          <legend id="q-prompt"></legend>
+          <pre id="q-code" class="q-code"><code></code></pre>
+          <p id="q-stdin" class="muted" hidden></p>
+          <div id="q-options" class="q-options"></div>
+        </fieldset>
+        <p class="row">
+          <button id="btn-check" type="submit" class="button primary">Check answer</button>
+          <button id="btn-unsure" type="button" class="button subtle">I'm not sure</button>
+        </p>
+      </form>
+      <div id="q-feedback" class="banner" role="status" aria-live="polite" hidden></div>
+      <p><button id="btn-next" type="button" class="button primary" hidden>Next question</button></p>
+    </div>
+
+    <div id="result" hidden>
+      <h2 id="result-title"></h2>
+      <p id="result-text"></p>
+      <p id="result-actions" class="row"></p>
+      <p id="result-message" class="notice" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <script id="placement-data" type="application/json" set:html={json} />
+  <script>
+    import "../scripts/placement-page";
+  </script>
+</Base>

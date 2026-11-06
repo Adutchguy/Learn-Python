@@ -82,3 +82,21 @@ export function pyodideVersion(): string {
   const pkg = JSON.parse(fs.readFileSync(path.resolve(process.cwd(), "node_modules/pyodide/package.json"), "utf8"));
   return pkg.version as string;
 }
+
+export interface PlacementQuestion {
+  id: string;
+  lesson: string | null;
+  topic?: string;
+  kind?: "output" | "error";
+  prompt: string;
+  code?: string;
+  stdin?: string;
+  options: string[];
+  answer: number;
+  explanation: string;
+}
+
+export function loadPlacementQuestions(): PlacementQuestion[] {
+  const file = path.join(CONTENT_DIR, "placement", "questions.json");
+  return JSON.parse(fs.readFileSync(file, "utf8")).questions as PlacementQuestion[];
+}

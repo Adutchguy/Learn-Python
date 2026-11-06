@@ -8,17 +8,26 @@ const message = document.getElementById("progress-message");
 function refresh() {
   const progress = loadProgress();
   let done = 0;
+  let skipped = 0;
   let firstTodo: HTMLElement | undefined;
   for (const el of lessonEls) {
-    const isDone = progress.lessons[el.dataset.lessonId!]?.done === true;
+    const entry = progress.lessons[el.dataset.lessonId!];
+    const isDone = entry?.done === true;
+    const wasSkipped = isDone && entry?.placedOut === true;
     el.classList.toggle("done", isDone);
-    el.querySelector<HTMLElement>(".check")!.textContent = isDone ? "✔" : "";
-    el.querySelector<HTMLElement>(".sr-status")!.textContent = isDone ? " (completed)" : "";
+    el.querySelector<HTMLElement>(".check")!.textContent = wasSkipped ? "↷" : isDone ? "✔" : "";
+    el.querySelector<HTMLElement>(".sr-status")!.textContent = wasSkipped
+      ? " (skipped by the placement test)"
+      : isDone
+        ? " (completed)"
+        : "";
     if (isDone) done++;
+    if (wasSkipped) skipped++;
     else if (!firstTodo) firstTodo = el;
   }
   if (summary) {
-    summary.textContent = done === 0 ? "" : `${done} of ${lessonEls.length} lessons complete`;
+    const extra = skipped > 0 ? ` (${skipped} skipped by the placement test)` : "";
+    summary.textContent = done === 0 ? "" : `${done} of ${lessonEls.length} lessons complete${extra}`;
   }
   if (startLink) {
     const next = firstTodo?.querySelector<HTMLAnchorElement>("a");

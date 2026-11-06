@@ -433,3 +433,49 @@ main {
 [hidden] {
   display: none !important;
 }
+
+/* ---- Placement test ---- */
+.placement {
+  max-width: 46rem;
+}
+.placement fieldset {
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.placement legend {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.q-code {
+  margin: 0 0 0.75rem;
+}
+.q-options {
+  display: grid;
+  gap: 0.5rem;
+}
+.q-option {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+.q-option:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.q-option-text {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  white-space: pre-wrap;
+}
+.q-option.is-answer {
+  border-color: var(--good);
+  background: var(--good-bg);
+}
+.q-option.is-wrong {
+  border-color: var(--bad);
+  background: var(--bad-bg);
+}

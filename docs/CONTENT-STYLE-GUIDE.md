@@ -30,7 +30,7 @@ hints:                               # exactly three, each a little more reveali
 ---
 ```
 
-Unknown keys are rejected.
+Optional: `broken_starter: true` allows a `starter.py` that does not even parse (only for lessons about fixing errors). Unknown keys are rejected.
 
 ## Lesson body
 
@@ -97,3 +97,12 @@ Browsers cannot provide real network sockets, subprocesses or threads. Lessons a
 - [ ] `python tools/check_solutions.py` passes
 - [ ] `cd web && npm test` passes
 - [ ] You read the lesson in the browser (`npm run dev`) and it makes sense to a complete beginner
+
+## Placement-test questions
+
+The placement test lives in `content/placement/questions.json`. Each question is a short program and four or so options.
+
+- Keep questions in **course order** (by the lesson they test). Questions for topics with no lesson yet use `"lesson": null` and a `"topic"`, and go last.
+- Options are plain strings; use `\n` for options that print several lines. Add `"stdin"` if the program reads input. Use `"kind": "error"` when the question is "which error is this?", and list the exception name as the right option.
+- Every question needs an `"explanation"` that teaches, in one or two sentences.
+- You do not need to work out the answer by hand: `python tools/validate_content.py` runs each program and fails if the answer key does not match what Python really prints.

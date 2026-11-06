@@ -23,7 +23,7 @@ Three details matter here:
 2. The code that belongs to the `if` is **indented** (four spaces is the convention). Indentation is how Python knows which lines are inside the `if`.
 3. If the condition is false, the indented code is skipped.
 
-Comparisons give you `True` or `False`: `>` greater than, `<` less than, `>=` greater than or equal, `<=` less than or equal, `==` equal to, `!=` not equal to. Note the **double** `==` for comparing; a single `=` is assignment.
+The condition is any comparison that gives `True` or `False`, like the ones you met in the last lesson: `>`, `<`, `>=`, `<=`, `==` and `!=`. Remember the **double** `==` for comparing; a single `=` is assignment.
 
 Add `elif` ("else if") for more cases and `else` for everything left over. Python checks them top to bottom and runs only the **first** one that is true:
 
@@ -44,7 +44,7 @@ Change `score` in the example above and run it a few times. Try 95, 70, 69 and 0
 
 ## Your turn
 
-The starter code asks the user for a temperature and stores it in `temperature`. (`input()` reads what the user types, and `int()` turns it into a number. You will learn how those work in a later lesson; for now, leave that line alone.)
+The starter code asks the user for a temperature and stores it in `temperature`. (You met `input()` and `int()` two lessons ago: it reads what the user types and turns it into a number.)
 
 Add an `if` / `elif` / `else` that prints exactly one word:
 

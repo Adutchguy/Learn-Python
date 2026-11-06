@@ -27,6 +27,8 @@ CONTENT = ROOT / "content"
 EXERCISES = ROOT / "exercises"
 
 LESSON_FILES = ("lesson.md", "starter.py", "solution.py", "test_exercise.py")
+# Folders inside content/ that hold course-wide material rather than a module of lessons.
+NON_COURSE_DIRS = {"placement"}
 SLUG_RE = re.compile(r"^\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*$")
 REQUIRED_HEADINGS = ("## Your turn", "## Recap")
 HINT_COUNT = 3
@@ -76,7 +78,7 @@ def load_all(content_dir: Path = CONTENT) -> tuple[list[Lesson], list[str]]:
     problems: list[str] = []
     lessons: list[Lesson] = []
 
-    for module_dir in sorted(p for p in content_dir.iterdir() if p.is_dir()):
+    for module_dir in sorted(p for p in content_dir.iterdir() if p.is_dir() and p.name not in NON_COURSE_DIRS):
         rel = module_dir.relative_to(content_dir)
         if not SLUG_RE.match(module_dir.name):
             problems.append(f"{rel}: folder name must look like '01-some-name'")
@@ -175,7 +177,10 @@ def validate(lessons: list[Lesson]) -> list[str]:
         ):
             problems.append(f"{where}: 'hints' must be a list of exactly {HINT_COUNT} non-empty strings")
 
-        unknown = set(m) - {"title", "minutes", "prereqs", "concepts", "local_only", "hints"}
+        if "broken_starter" in m and not isinstance(m["broken_starter"], bool):
+            problems.append(f"{where}: 'broken_starter' must be true or false")
+
+        unknown = set(m) - {"title", "minutes", "prereqs", "concepts", "local_only", "hints", "broken_starter"}
         if unknown:
             problems.append(f"{where}: unknown frontmatter key(s): {', '.join(sorted(unknown))}")
 
@@ -191,7 +196,9 @@ def validate(lessons: list[Lesson]) -> list[str]:
             try:
                 tree = ast.parse(source)
             except SyntaxError as exc:
-                problems.append(f"{where}/{name}: syntax error on line {exc.lineno}: {exc.msg}")
+                # A lesson about reading errors may ship a starter that cannot be parsed on purpose.
+                if not (name == "starter.py" and m.get("broken_starter") is True):
+                    problems.append(f"{where}/{name}: syntax error on line {exc.lineno}: {exc.msg}")
                 continue
             if name == "test_exercise.py":
                 problems.extend(_check_tests(where, tree))

@@ -7,7 +7,7 @@ A free, open-source way to learn Python quickly and thoroughly, with **no sign-u
 
 Both tracks come from the same lesson files, so they always match.
 
-> **Status:** early. The engine works end to end and there are 3 sample lessons. More modules are being added; see [docs/PLAN.md](docs/PLAN.md) for the full roadmap.
+> **Status:** early but usable. 16 lessons are written (Start Here, Foundations, Control Flow, with a first project: a number-guessing game), plus a placement test that suggests where to start. More modules are being added; see [docs/PLAN.md](docs/PLAN.md) for the full roadmap.
 
 ## How learning works here
 
@@ -51,7 +51,7 @@ Tip: work on your own branch (`git switch -c my-answers`) or in a fork, so your 
 
 | Folder | What it is |
 |---|---|
-| `content/` | **Source of truth.** One folder per lesson: `lesson.md`, `starter.py`, `solution.py`, `test_exercise.py` |
+| `content/` | **Source of truth.** One folder per lesson: `lesson.md`, `starter.py`, `solution.py`, `test_exercise.py`. Also `placement/questions.json`, the placement-test question bank |
 | `exercises/` | Local track, **generated** from `content/` (do not edit by hand, except `conftest.py`) |
 | `web/` | The website (Astro) and the in-browser Python runner (Pyodide) |
 | `tools/` | Python scripts that validate lessons and generate `exercises/` |
@@ -65,7 +65,7 @@ Quick start for contributors:
 
 ```bash
 pip install -r requirements.txt
-python tools/validate_content.py          # are all lessons well formed?
+python tools/validate_content.py          # are all lessons well formed? (also runs the placement questions to verify their answers)
 python tools/build_exercises.py           # regenerate exercises/ after editing content/
 python tools/check_solutions.py           # every solution passes, every starter fails
 python -m pytest tools/tests              # tests for the tooling itself

@@ -11,6 +11,8 @@ export interface LessonProgress {
   hintsUsed: number;
   code?: string;
   completedAt?: string;
+  /** Marked done by the placement test rather than by completing the lesson. */
+  placedOut?: boolean;
 }
 
 interface Progress {
@@ -35,6 +37,7 @@ function sanitize(raw: unknown): Progress | null {
       hintsUsed: Number.isFinite(v.hintsUsed) ? Math.max(0, Math.min(3, Math.floor(v.hintsUsed as number))) : 0,
       code: typeof v.code === "string" ? v.code.slice(0, MAX_CODE_LENGTH) : undefined,
       completedAt: typeof v.completedAt === "string" ? v.completedAt.slice(0, 40) : undefined,
+      placedOut: v.placedOut === true ? true : undefined,
     };
   }
   return clean;
@@ -73,6 +76,19 @@ export function updateLesson(id: string, patch: Partial<LessonProgress>): Lesson
   progress.lessons[id] = next;
   persist(progress);
   return next;
+}
+
+/** Mark lessons as skipped by the placement test. Lessons already done are left alone. Returns how many changed. */
+export function markPlacedOut(ids: string[]): number {
+  const progress = loadProgress();
+  let changed = 0;
+  for (const id of ids) {
+    if (getLesson(id).done) continue;
+    progress.lessons[id] = { ...getLesson(id), done: true, placedOut: true, completedAt: new Date().toISOString() };
+    changed++;
+  }
+  persist(progress);
+  return changed;
 }
 
 export function exportProgress(): string {

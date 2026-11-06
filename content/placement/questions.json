@@ -1,0 +1,171 @@
+{
+  "questions": [
+    {
+      "id": "print-two-lines",
+      "lesson": "01-foundations/01-hello-world",
+      "prompt": "What does this program print?",
+      "code": "print(\"Python\")\nprint(\"rocks\")",
+      "options": ["Python rocks", "Python\nrocks", "\"Python\"\n\"rocks\"", "It causes an error"],
+      "answer": 1,
+      "explanation": "Each print() ends with a new line, and the quotes are not printed."
+    },
+    {
+      "id": "reassign-variable",
+      "lesson": "01-foundations/02-variables",
+      "prompt": "What does this program print?",
+      "code": "x = 4\ny = x * 2\nx = 10\nprint(y)",
+      "options": ["8", "20", "10", "4"],
+      "answer": 0,
+      "explanation": "y was calculated when x was 4, so y stays 8 even though x changes afterwards."
+    },
+    {
+      "id": "name-error",
+      "lesson": "01-foundations/03-reading-error-messages",
+      "kind": "error",
+      "prompt": "This program stops with an error. Which kind?",
+      "code": "total = 5\nprint(totl)",
+      "options": ["SyntaxError", "NameError", "TypeError", "ZeroDivisionError"],
+      "answer": 1,
+      "explanation": "totl is a typo: Python does not know that name, which is a NameError."
+    },
+    {
+      "id": "type-of-division",
+      "lesson": "01-foundations/04-data-types",
+      "prompt": "What does this program print?",
+      "code": "print(type(7 / 2))",
+      "options": ["<class 'int'>", "<class 'float'>", "<class 'str'>", "<class 'bool'>"],
+      "answer": 1,
+      "explanation": "The / operator always gives a float, even when the result is a whole number."
+    },
+    {
+      "id": "input-is-text",
+      "lesson": "01-foundations/05-input-and-conversion",
+      "prompt": "The user types 5. What does this program print?",
+      "code": "age = input()\nprint(age + age)",
+      "stdin": "5\n",
+      "options": ["10", "55", "5 5", "It causes an error"],
+      "answer": 1,
+      "explanation": "input() always returns text, so + joins the two strings: \"5\" + \"5\" is \"55\"."
+    },
+    {
+      "id": "floor-and-modulo",
+      "lesson": "01-foundations/06-arithmetic",
+      "prompt": "What does this program print?",
+      "code": "print(17 // 5, 17 % 5)",
+      "options": ["3 2", "3.4 2", "3 3", "2 3"],
+      "answer": 0,
+      "explanation": "// gives the whole number of times 5 fits into 17 (3) and % gives the remainder (2)."
+    },
+    {
+      "id": "operator-precedence",
+      "lesson": "01-foundations/06-arithmetic",
+      "prompt": "What does this program print?",
+      "code": "print(2 + 3 * 4 ** 2)",
+      "options": ["50", "80", "400", "98"],
+      "answer": 0,
+      "explanation": "Powers come first (4 ** 2 = 16), then multiplication (3 * 16 = 48), then addition (2 + 48 = 50)."
+    },
+    {
+      "id": "string-indexing",
+      "lesson": "01-foundations/07-strings",
+      "prompt": "What does this program print?",
+      "code": "word = \"python\"\nprint(word[0].upper() + word[-1])",
+      "options": ["Pn", "Pp", "pN", "Pt"],
+      "answer": 0,
+      "explanation": "word[0] is \"p\", which upper() turns into \"P\". word[-1] is the last character, \"n\"."
+    },
+    {
+      "id": "f-string-format",
+      "lesson": "01-foundations/08-f-strings",
+      "prompt": "What does this program print?",
+      "code": "price = 3.5\nqty = 2\nprint(f\"{price * qty:.2f} total\")",
+      "options": ["7.00 total", "7 total", "7.0 total", "{price * qty:.2f} total"],
+      "answer": 0,
+      "explanation": "The calculation happens inside the braces, and :.2f shows two decimal places."
+    },
+    {
+      "id": "not-and",
+      "lesson": "01-foundations/09-booleans-and-comparisons",
+      "prompt": "What does this program print?",
+      "code": "print(not (3 > 2 and 5 < 4))",
+      "options": ["True", "False", "3", "It causes an error"],
+      "answer": 0,
+      "explanation": "3 > 2 is True and 5 < 4 is False, so the 'and' is False, and 'not' flips it to True."
+    },
+    {
+      "id": "if-elif-else",
+      "lesson": "02-control-flow/01-if-else",
+      "prompt": "What does this program print?",
+      "code": "x = 15\nif x > 20:\n    print(\"big\")\nelif x > 10:\n    print(\"medium\")\nelse:\n    print(\"small\")",
+      "options": ["big", "medium", "small", "big\nmedium"],
+      "answer": 1,
+      "explanation": "Python runs only the first branch whose condition is true: x > 20 is false, x > 10 is true."
+    },
+    {
+      "id": "combined-conditions",
+      "lesson": "02-control-flow/02-combined-and-nested-conditions",
+      "prompt": "What does this program print?",
+      "code": "age = 70\nday = \"tue\"\nprice = 15\nif age >= 65 and day in (\"sat\", \"sun\"):\n    price = 12\nelif age >= 65:\n    price = 10\nprint(price)",
+      "options": ["15", "12", "10", "27"],
+      "answer": 2,
+      "explanation": "The first condition needs a weekend day, so it is false; the elif is true because age >= 65."
+    },
+    {
+      "id": "while-accumulator",
+      "lesson": "02-control-flow/03-while-loops",
+      "prompt": "What does this program print?",
+      "code": "total = 0\ni = 1\nwhile i <= 4:\n    total += i\n    i += 1\nprint(total)",
+      "options": ["10", "4", "6", "15"],
+      "answer": 0,
+      "explanation": "The loop adds 1, 2, 3 and 4, giving 10."
+    },
+    {
+      "id": "range-step",
+      "lesson": "02-control-flow/04-for-loops-and-range",
+      "prompt": "What does this program print?",
+      "code": "for i in range(2, 10, 3):\n    print(i)",
+      "options": ["2\n5\n8", "2\n5\n8\n11", "2\n3\n4", "3\n6\n9"],
+      "answer": 0,
+      "explanation": "range(2, 10, 3) starts at 2 and steps by 3 while staying below 10: 2, 5, 8."
+    },
+    {
+      "id": "break-and-continue",
+      "lesson": "02-control-flow/05-break-and-continue",
+      "prompt": "What does this program print?",
+      "code": "for i in range(6):\n    if i == 2:\n        continue\n    if i == 4:\n        break\n    print(i)",
+      "options": ["0\n1\n3", "0\n1\n2\n3", "0\n1\n3\n5", "1\n3"],
+      "answer": 0,
+      "explanation": "continue skips 2, and break stops the loop when i reaches 4, so 4 is never printed."
+    },
+    {
+      "id": "list-append",
+      "lesson": null,
+      "topic": "Data structures",
+      "prompt": "What does this program print?",
+      "code": "nums = [3, 1, 2]\nnums.append(4)\nprint(len(nums))",
+      "options": ["3", "4", "[3, 1, 2, 4]", "It causes an error"],
+      "answer": 1,
+      "explanation": "append adds one item to the end of the list, so the list now has 4 items."
+    },
+    {
+      "id": "dict-lookup",
+      "lesson": null,
+      "topic": "Data structures",
+      "prompt": "What does this program print?",
+      "code": "ages = {\"ana\": 30, \"bo\": 25}\nprint(ages[\"bo\"])",
+      "options": ["25", "30", "bo", "It causes an error"],
+      "answer": 0,
+      "explanation": "A dictionary looks values up by key: the key \"bo\" maps to 25."
+    },
+    {
+      "id": "function-return",
+      "lesson": null,
+      "topic": "Functions",
+      "prompt": "What does this program print?",
+      "code": "def double(x):\n    return x * 2\n\nprint(double(double(2)))",
+      "options": ["8", "4", "2", "It causes an error"],
+      "answer": 0,
+      "explanation": "double(2) is 4, and double(4) is 8."
+    }
+  ]
+}

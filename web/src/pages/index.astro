@@ -1,7 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import { loadCourse, flattenLessons } from "../lib/course";
-import { REPO_URL } from "../lib/paths";
+import { REPO_URL, url } from "../lib/paths";
 
 const modules = await loadCourse();
 const all = flattenLessons(modules);
@@ -18,6 +18,7 @@ const totalMinutes = all.reduce((sum, l) => sum + l.minutes, 0);
     </p>
     <p class="cta">
       {first && <a id="start-link" class="button primary large" href={first.href}>Start with lesson 1</a>}
+      <a class="button" href={url("placement/")}>Already know some Python? Take the placement test</a>
       <a class="button" href={`${REPO_URL}#work-on-your-own-computer`}>Prefer your own computer?</a>
     </p>
     <p id="progress-summary" class="muted" aria-live="polite"></p>
@@ -31,7 +32,8 @@ const totalMinutes = all.reduce((sum, l) => sum + l.minutes, 0);
       <li><strong>Check</strong> your answer. Clear hints help when you are stuck.</li>
     </ol>
     <p class="muted">
-      Already comfortable with another language? A placement test and a fast track for programmers are coming soon.
+      Not sure where to start? The <a href={url("placement/")}>placement test</a> takes about five minutes and
+      suggests the right lesson. A fast track for programmers who know another language is coming soon.
     </p>
   </section>
 

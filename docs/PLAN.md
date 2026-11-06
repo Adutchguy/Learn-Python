@@ -2,7 +2,7 @@
 
 **Goal:** a free, open-source way for anyone to fully learn Python as effectively and quickly as possible, with no cost and no account.
 
-**Status:** M0 (scaffold) and M1 (engine + 3 sample lessons) are built. Next: M2 (modules 0-2 and the placement test).
+**Status:** M0 (scaffold), M1 (engine) and M2 (modules 0-2, placement test v1, first project) are built: 16 lessons. Next: M3 (data structures, functions, text & files, spaced review).
 
 **Decisions so far (from kickoff):**
 - Delivery: **both** a no-install browser app **and** a clone-and-run repo track
@@ -74,6 +74,8 @@ Learn-Python/
 
 ## 3. Placement path
 
+> **Built (M2, v1):** a "what does this print?" quiz at `/placement/` with 18 multiple-choice questions in course order (15 on published lessons, 3 beyond them: lists, dicts, functions). It stops after two misses, recommends the lesson of the first miss, and can mark earlier lessons as skipped (`placedOut` in progress; the orientation lesson is never skipped). Every answer key is verified by running the code in CI (`tools/placement.py`). Still to do from the list below: the landing choice, tiny coding tasks, per-module checkpoints, and the programmers' fast-track.
+
 1. **Landing choice:** "I'm new to programming" / "I know another language" / "Test me".
 2. **Diagnostic (~15–20 min, adaptive):** short multiple-choice, "what does this print?", and 3–4 tiny coding tasks. Questions are tagged by concept.
 3. **Result:** a recommended starting module and a personalised map (skipped / review / learn). Always overridable.
@@ -84,8 +86,8 @@ Learn-Python/
 
 | # | Module | Key topics | Project |
 |---|---|---|---|
-| 0 | Start Here | How this works, running code, reading error messages | — |
-| 1 | Foundations (8) | Values & types, variables, operators, input/print, strings basics, f-strings, numbers, booleans | — |
+| 0 | Start Here | How this works, running code | — |
+| 1 | Foundations (9) | Hello world, variables, reading error messages, types, input & conversion, arithmetic, strings, f-strings, booleans & comparisons | — |
 | 2 | Control Flow (6) | `if/elif/else`, `while`, `for`, `range`, `break/continue`, nested logic | Number-guessing game |
 | 3 | Data Structures (8) | Lists, tuples, dicts, sets, slicing, sorting, comprehensions, choosing the right structure | — |
 | 4 | Functions (7) | Defining, params/args/kwargs, return, scope, lambdas, recursion, docstrings & type hints | Text-adventure / quiz engine |
