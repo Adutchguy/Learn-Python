@@ -19,3 +19,7 @@ Thumbs.db
 
 # Learner scratch space (used by the future `learn` CLI)
 workspace/
+
+# Local-track progress written by `python -m learn`
+.learn-progress.json
+.learn-progress.json.tmp

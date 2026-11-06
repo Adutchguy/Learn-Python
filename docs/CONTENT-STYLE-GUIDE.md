@@ -89,6 +89,14 @@ Anything else (`parametrize`, `request`, plugins, ...) works locally but **not i
 
 Patch it in the test with `monkeypatch.setattr("builtins.input", lambda prompt="": "30")`. In the browser, learners type values into the Input box when they press **Run**.
 
+### Testing things that are random, on disk, or logged
+
+- **Randomness:** make the function take a `random.Random` (for example `roll_dice(count, rng)`), and have the test pass `random.Random(42)`. Never assert on unseeded random output.
+- **Files:** use `tmp_path` for anything the learner's code writes. If the code works relative to the current folder, call `monkeypatch.chdir(tmp_path)` so a failing test cannot leave files behind.
+- **Logging:** give each test a fresh logger name, because loggers are global and would otherwise carry handlers from one test into the next.
+- **Collaborators:** when a lesson is about composition, test with a small fake object (a duck type) instead of the learner's other class.
+- **Report text:** when a result contains values that may legitimately be formatted in more than one way, check the pieces (for example `"12.50" in line`) instead of the exact whole line.
+
 ## `local_only` lessons
 
 Browsers cannot provide real network sockets, subprocesses or threads. Lessons about those topics set `local_only: true`. They appear on the website with instructions to use the local track, and the browser-runner tests skip them. Their tests may use any pytest feature.

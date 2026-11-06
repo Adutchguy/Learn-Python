@@ -6,7 +6,7 @@ Each folder here is one lesson:
 - `exercise.py`: **your** file; edit it
 - `test_exercise.py`: the checks
 
-Check one lesson from the repository root:
+From the repository root, `python -m learn` tells you which lesson is next, `python -m learn check` runs its checks and `python -m learn hint` gives a hint. You can also check one lesson directly:
 
 ```bash
 pytest exercises/01-foundations/01-hello-world

@@ -7,7 +7,7 @@ A free, open-source way to learn Python quickly and thoroughly, with **no sign-u
 
 Both tracks come from the same lesson files, so they always match.
 
-> **Status:** early but usable. 38 lessons are written: Start Here, Foundations, Control Flow, Data Structures, Functions and Text & Files, with two projects (a number-guessing game and a quiz engine). There is a placement test that suggests where to start and a spaced-review queue that brings finished lessons back at growing gaps. More modules are being added; see [docs/PLAN.md](docs/PLAN.md) for the full roadmap.
+> **Status:** early but usable. 59 lessons are written, from Start Here through Errors & Debugging, Modules & Tooling and Object-Oriented Programming, with four projects (a number-guessing game, a quiz engine, an expense tracker and a bank system). There is a placement test that suggests where to start and a spaced-review queue that brings finished lessons back at growing gaps. More modules are being added; see [docs/PLAN.md](docs/PLAN.md) for the full roadmap.
 
 ## How learning works here
 
@@ -39,7 +39,19 @@ exercises/01-foundations/01-hello-world/
 └── test_exercise.py   <- the checks (read-only)
 ```
 
-Check your work from the repository root:
+The `learn` helper keeps track of where you are, so you never have to hunt for the next lesson. Run it from the repository root:
+
+```bash
+python -m learn                 # what to do next
+python -m learn check           # run the checks for your current lesson (a pass marks it complete)
+python -m learn hint            # reveal one hint at a time
+python -m learn status          # your progress, module by module
+python -m learn list            # every lesson, with the finished ones ticked
+```
+
+`check` and `hint` also accept a lesson number from `list`, or a word from its name (`python -m learn check variables`). Your progress is saved in `.learn-progress.json`, which Git ignores.
+
+Prefer plain pytest? That works too:
 
 ```bash
 pytest exercises/01-foundations/01-hello-world
@@ -54,6 +66,7 @@ Tip: work on your own branch (`git switch -c my-answers`) or in a fork, so your 
 | `content/` | **Source of truth.** One folder per lesson: `lesson.md`, `starter.py`, `solution.py`, `test_exercise.py`. Also `placement/questions.json` (placement-test questions) and `review/questions.json` (spaced-review questions) |
 | `exercises/` | Local track, **generated** from `content/` (do not edit by hand, except `conftest.py`) |
 | `web/` | The website (Astro) and the in-browser Python runner (Pyodide) |
+| `learn/` | The `python -m learn` command-line guide for the local track |
 | `tools/` | Python scripts that validate lessons and generate `exercises/` |
 | `docs/` | Plan, content style guide |
 

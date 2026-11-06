@@ -520,6 +520,332 @@
       ],
       "answer": 0,
       "explanation": "\\d+ matches each run of digits, and findall returns them as text: '1', '22' and '333'."
+    },
+    {
+      "id": "01-try-and-except-1",
+      "lesson": "06-errors-and-debugging/01-try-and-except",
+      "prompt": "What does this program print?",
+      "code": "try:\n    n = int(\"12x\")\n    print(\"converted\")\nexcept ValueError:\n    print(\"bad number\")\nfinally:\n    print(\"done\")",
+      "options": [
+        "converted\ndone",
+        "bad number\ndone",
+        "bad number",
+        "converted"
+      ],
+      "answer": 1,
+      "explanation": "int(\"12x\") raises a ValueError before the next line runs, the except block prints bad number, and finally always runs."
+    },
+    {
+      "id": "01-try-and-except-2",
+      "lesson": "06-errors-and-debugging/01-try-and-except",
+      "prompt": "This program stops with an error. Which kind?",
+      "code": "try:\n    print(int(None))\nexcept ValueError:\n    print(\"bad\")",
+      "kind": "error",
+      "options": [
+        "ValueError",
+        "NameError",
+        "TypeError",
+        "KeyError"
+      ],
+      "answer": 2,
+      "explanation": "int(None) raises a TypeError, not a ValueError, so the except ValueError clause does not catch it. Catch only the errors you expect."
+    },
+    {
+      "id": "02-raising-exceptions-1",
+      "lesson": "06-errors-and-debugging/02-raising-exceptions",
+      "prompt": "What does this program print?",
+      "code": "def check(n):\n    if n < 0:\n        raise ValueError(\"negative\")\n    return n\n\ntry:\n    print(check(5))\n    print(check(-1))\n    print(check(7))\nexcept ValueError as err:\n    print(\"caught\", err)",
+      "options": [
+        "5\ncaught negative\n7",
+        "caught negative",
+        "5\n7",
+        "5\ncaught negative"
+      ],
+      "answer": 3,
+      "explanation": "check(5) prints 5. check(-1) raises, which jumps straight to the except block, so check(7) never runs."
+    },
+    {
+      "id": "03-debugging-strategies-1",
+      "lesson": "06-errors-and-debugging/03-debugging-strategies",
+      "prompt": "What does this program print?",
+      "code": "nums = [-1, -2, 3]\nfor n in nums:\n    if n < 0:\n        nums.remove(n)\nprint(nums)",
+      "options": [
+        "[-2, 3]",
+        "[3]",
+        "[-1, -2, 3]",
+        "[-2]"
+      ],
+      "answer": 0,
+      "explanation": "Removing items from a list while looping over it makes the loop skip the next item, so -2 survives. Build a new list instead."
+    },
+    {
+      "id": "04-logging-1",
+      "lesson": "06-errors-and-debugging/04-logging",
+      "prompt": "What does this program print?",
+      "code": "import logging\nimport sys\n\nlogging.basicConfig(level=logging.WARNING, format=\"%(levelname)s:%(message)s\", stream=sys.stdout)\nlogging.info(\"a\")\nlogging.warning(\"b\")\nlogging.error(\"c\")",
+      "options": [
+        "INFO:a\nWARNING:b\nERROR:c",
+        "WARNING:b\nERROR:c",
+        "ERROR:c",
+        "WARNING:b"
+      ],
+      "answer": 1,
+      "explanation": "The level is WARNING, so INFO messages are hidden. WARNING and ERROR are at or above it and are shown in the format given."
+    },
+    {
+      "id": "05-context-managers-1",
+      "lesson": "06-errors-and-debugging/05-context-managers",
+      "prompt": "What does this program print?",
+      "code": "from contextlib import contextmanager\n\n@contextmanager\ndef tag(name):\n    print(\"<\" + name + \">\")\n    try:\n        yield\n    finally:\n        print(\"</\" + name + \">\")\n\ntry:\n    with tag(\"b\"):\n        print(\"text\")\n        1 / 0\nexcept ZeroDivisionError:\n    print(\"error\")",
+      "options": [
+        "<b>\ntext\nerror",
+        "<b>\ntext\n</b>",
+        "<b>\ntext\n</b>\nerror",
+        "<b>\ntext\n</b>\nerror\n</b>"
+      ],
+      "answer": 2,
+      "explanation": "The finally part runs even though the block failed, so the closing tag is printed before the error is handled outside."
+    },
+    {
+      "id": "01-importing-modules-1",
+      "lesson": "07-modules-and-tooling/01-importing-modules",
+      "prompt": "What does this program print?",
+      "code": "import math\nfrom math import sqrt as root\n\nprint(root(16), math.floor(-2.5))\nif __name__ == \"__main__\":\n    print(\"script\")",
+      "options": [
+        "4 -2\nscript",
+        "4.0 -3",
+        "4.0 -2\nscript",
+        "4.0 -3\nscript"
+      ],
+      "answer": 3,
+      "explanation": "sqrt returns a float (4.0) and floor rounds down, so -2.5 becomes -3. The file is run directly, so __name__ is \"__main__\" and the last line runs."
+    },
+    {
+      "id": "02-collections-1",
+      "lesson": "07-modules-and-tooling/02-collections",
+      "prompt": "What does this program print?",
+      "code": "from collections import Counter, defaultdict\n\nc = Counter(\"mississippi\")\nprint(c.most_common(2))\nd = defaultdict(list)\nd[\"x\"].append(1)\nprint(dict(d), c[\"z\"])",
+      "options": [
+        "[('i', 4), ('s', 4)]\n{'x': [1]} 0",
+        "[('s', 4), ('i', 4)]\n{'x': [1]} 0",
+        "[('i', 4), ('p', 2)]\n{'x': [1]} 0",
+        "[('i', 4), ('s', 4)]\n{'x': [1]} 1"
+      ],
+      "answer": 0,
+      "explanation": "i and s both appear 4 times and ties keep first-seen order. A defaultdict creates the missing list, and a Counter returns 0 for a missing item."
+    },
+    {
+      "id": "03-dates-and-times-1",
+      "lesson": "07-modules-and-tooling/03-dates-and-times",
+      "prompt": "What does this program print?",
+      "code": "from datetime import date, timedelta\n\nd = date(2024, 2, 28)\nprint(d + timedelta(days=2), (date(2024, 3, 10) - d).days)",
+      "options": [
+        "2024-03-02 11",
+        "2024-03-01 11",
+        "2024-03-01 10",
+        "2024-02-30 11"
+      ],
+      "answer": 1,
+      "explanation": "2024 is a leap year, so two days after 28 February is 1 March. Subtracting dates gives a timedelta whose .days is 11."
+    },
+    {
+      "id": "04-itertools-and-random-1",
+      "lesson": "07-modules-and-tooling/04-itertools-and-random",
+      "prompt": "What does this program print?",
+      "code": "from itertools import combinations, product\n\nprint(len(list(combinations(\"abcd\", 2))), len(list(product(\"ab\", repeat=3))))",
+      "options": [
+        "12 6",
+        "6 6",
+        "6 8",
+        "4 8"
+      ],
+      "answer": 2,
+      "explanation": "Choosing 2 of 4 gives 6 pairs, and product(\"ab\", repeat=3) has 2 * 2 * 2 = 8 combinations."
+    },
+    {
+      "id": "04-itertools-and-random-2",
+      "lesson": "07-modules-and-tooling/04-itertools-and-random",
+      "prompt": "What does this program print?",
+      "code": "import random\n\na = random.Random(7).randint(1, 100)\nb = random.Random(7).randint(1, 100)\nprint(a == b)",
+      "options": [
+        "False",
+        "7",
+        "It causes an error",
+        "True"
+      ],
+      "answer": 3,
+      "explanation": "Two generators created with the same seed produce exactly the same sequence, which is what makes random code testable."
+    },
+    {
+      "id": "05-packages-pip-and-virtual-environments-1",
+      "lesson": "07-modules-and-tooling/05-packages-pip-and-virtual-environments",
+      "prompt": "What does this program print?",
+      "code": "text = \"requests==2.31.0\"\nname, _, version = text.partition(\"==\")\nprint(name, version)",
+      "options": [
+        "requests 2.31.0",
+        "requests==2.31.0",
+        "2.31.0 requests",
+        "requests ==2.31.0"
+      ],
+      "answer": 0,
+      "explanation": "partition splits at the first \"==\" into (before, separator, after). This is how a pinned requirement such as requests==2.31.0 is read: package name, then exact version."
+    },
+    {
+      "id": "06-project-layout-1",
+      "lesson": "07-modules-and-tooling/06-project-layout",
+      "prompt": "What does this program print?",
+      "code": "name = \"My Cool-Tool\"\npackage = name.lower().replace(\" \", \"_\").replace(\"-\", \"_\")\nprint(package)",
+      "options": [
+        "my cool-tool",
+        "my_cool_tool",
+        "my_cool-tool",
+        "My_Cool_Tool"
+      ],
+      "answer": 1,
+      "explanation": "A package name must be a valid identifier: lower case, with underscores instead of spaces and hyphens."
+    },
+    {
+      "id": "01-classes-and-objects-1",
+      "lesson": "08-oop/01-classes-and-objects",
+      "prompt": "What does this program print?",
+      "code": "class Dog:\n    def __init__(self, name):\n        self.name = name\n\na = Dog(\"Rex\")\nb = a\nb.name = \"Max\"\nprint(a.name, Dog(\"Fido\").name)",
+      "options": [
+        "Rex Fido",
+        "Rex Max",
+        "Max Fido",
+        "Max Max"
+      ],
+      "answer": 2,
+      "explanation": "b = a does not copy the object: both names refer to the same Dog, so changing b.name also changes a.name. Dog(\"Fido\") is a separate object."
+    },
+    {
+      "id": "01-classes-and-objects-2",
+      "lesson": "08-oop/01-classes-and-objects",
+      "prompt": "This program stops with an error. Which kind?",
+      "code": "class Box:\n    def __init__(self, size):\n        size = size\n\nprint(Box(3).size)",
+      "kind": "error",
+      "options": [
+        "TypeError",
+        "NameError",
+        "KeyError",
+        "AttributeError"
+      ],
+      "answer": 3,
+      "explanation": "size = size only sets a local variable. Without self.size = size the object never gets a size attribute."
+    },
+    {
+      "id": "02-methods-1",
+      "lesson": "08-oop/02-methods",
+      "prompt": "What does this program print?",
+      "code": "class Counter:\n    def __init__(self):\n        self.n = 0\n\n    def add(self, k=1):\n        self.n += k\n        return self\n\nc = Counter()\nc.add().add(5)\nprint(c.n)",
+      "options": [
+        "6",
+        "5",
+        "1",
+        "0"
+      ],
+      "answer": 0,
+      "explanation": "add returns self, so the calls can be chained: first +1, then +5, giving 6."
+    },
+    {
+      "id": "03-dunder-methods-1",
+      "lesson": "08-oop/03-dunder-methods",
+      "prompt": "What does this program print?",
+      "code": "class P:\n    def __init__(self, n):\n        self.n = n\n\n    def __repr__(self):\n        return f\"P({self.n})\"\n\n    def __lt__(self, other):\n        return self.n < other.n\n\nprint(sorted([P(3), P(1), P(2)]))",
+      "options": [
+        "[P(3), P(1), P(2)]",
+        "[P(1), P(2), P(3)]",
+        "[1, 2, 3]",
+        "[P(1), P(2)]"
+      ],
+      "answer": 1,
+      "explanation": "sorted() compares items with <, which calls __lt__. A list is shown using each item's __repr__."
+    },
+    {
+      "id": "04-inheritance-1",
+      "lesson": "08-oop/04-inheritance",
+      "prompt": "What does this program print?",
+      "code": "class A:\n    def hello(self):\n        return \"A\"\n\n    def greet(self):\n        return \"hello \" + self.hello()\n\nclass B(A):\n    def hello(self):\n        return \"B\"\n\nprint(A().greet(), B().greet())",
+      "options": [
+        "hello A hello A",
+        "hello B hello B",
+        "hello A hello B",
+        "A B"
+      ],
+      "answer": 2,
+      "explanation": "greet is inherited, but self.hello() looks the method up on the actual object, so a B uses B's version."
+    },
+    {
+      "id": "05-composition-1",
+      "lesson": "08-oop/05-composition",
+      "prompt": "What does this program print?",
+      "code": "class Engine:\n    def start(self):\n        return \"vroom\"\n\nclass Silent:\n    def start(self):\n        return \"...\"\n\nclass Car:\n    def __init__(self, engine):\n        self.engine = engine\n\n    def go(self):\n        return self.engine.start()\n\nprint(Car(Engine()).go(), Car(Silent()).go())",
+      "options": [
+        "vroom vroom",
+        "... ...",
+        "It causes an error",
+        "vroom ..."
+      ],
+      "answer": 3,
+      "explanation": "Car only needs something with a start() method (duck typing), so any engine-like object can be plugged in."
+    },
+    {
+      "id": "06-dataclasses-1",
+      "lesson": "08-oop/06-dataclasses",
+      "prompt": "What does this program print?",
+      "code": "from dataclasses import dataclass, field\n\n@dataclass\nclass Box:\n    items: list = field(default_factory=list)\n\na, b = Box(), Box()\na.items.append(1)\nprint(a, b.items == [], a == Box([1]))",
+      "options": [
+        "Box(items=[1]) True True",
+        "Box(items=[1]) False True",
+        "Box(items=[1]) True False",
+        "Box([1]) True True"
+      ],
+      "answer": 0,
+      "explanation": "default_factory gives every Box its own list, so b stays empty. A dataclass shows its fields in repr and compares all fields in ==."
+    },
+    {
+      "id": "07-properties-1",
+      "lesson": "08-oop/07-properties",
+      "prompt": "This program stops with an error. Which kind?",
+      "code": "class C:\n    def __init__(self, r):\n        self._r = r\n\n    @property\n    def area(self):\n        return 3 * self._r ** 2\n\nc = C(2)\nprint(c.area)\nc.area = 5",
+      "kind": "error",
+      "options": [
+        "TypeError",
+        "AttributeError",
+        "ValueError",
+        "NameError"
+      ],
+      "answer": 1,
+      "explanation": "A property with no setter is read-only. Reading c.area works (it prints 12), but assigning to it raises an AttributeError."
+    },
+    {
+      "id": "07-properties-2",
+      "lesson": "08-oop/07-properties",
+      "prompt": "What does this program print?",
+      "code": "class T:\n    def __init__(self, c):\n        self.c = c\n\n    @property\n    def f(self):\n        return self.c * 9 / 5 + 32\n\nt = T(100)\nt.c = 0\nprint(t.f)",
+      "options": [
+        "212.0",
+        "0",
+        "32.0",
+        "32"
+      ],
+      "answer": 2,
+      "explanation": "A property is computed each time it is read, so it always reflects the current value of c: 0 degrees C is 32.0 degrees F."
+    },
+    {
+      "id": "08-abstract-classes-and-protocols-1",
+      "lesson": "08-oop/08-abstract-classes-and-protocols",
+      "prompt": "This program stops with an error. Which kind?",
+      "code": "from abc import ABC, abstractmethod\n\nclass Shape(ABC):\n    @abstractmethod\n    def area(self):\n        ...\n\nclass Square(Shape):\n    pass\n\nSquare()",
+      "kind": "error",
+      "options": [
+        "NotImplementedError",
+        "AttributeError",
+        "NameError",
+        "TypeError"
+      ],
+      "answer": 3,
+      "explanation": "Square never implements the abstract method area(), so Python refuses to create a Square: TypeError: Can't instantiate abstract class."
     }
   ]
 }

@@ -1,0 +1,4 @@
+{
+  "title": "Object-Oriented Programming",
+  "description": "Bundle data and behaviour into classes, then use dunder methods, inheritance, composition, dataclasses, properties and abstract classes to design programs that grow."
+}

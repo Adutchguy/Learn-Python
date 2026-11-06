@@ -1,0 +1,4 @@
+{
+  "title": "Errors and Debugging",
+  "description": "Handle failures gracefully with try/except, raise your own errors, hunt bugs methodically, log what happens, and finish with an expense-tracker project."
+}

@@ -2,7 +2,7 @@
 
 **Goal:** a free, open-source way for anyone to fully learn Python as effectively and quickly as possible, with no cost and no account.
 
-**Status:** M0 (scaffold), M1 (engine), M2 (modules 0-2, placement test v1, first project) and M3 (modules 3-5 and the spaced-review queue) are built: 38 lessons. Next: M4 (errors, modules & tooling, OOP, the `learn` CLI).
+**Status:** M0 (scaffold), M1 (engine), M2 (modules 0-2, placement test v1, first project), M3 (modules 3-5 and the spaced-review queue) and M4 (modules 6-8, the `learn` CLI, two more projects) are built: 59 lessons. Next: M5 (Pythonic Python, testing & quality, capstone, programmers' fast-track).
 
 **Decisions so far (from kickoff):**
 - Delivery: **both** a no-install browser app **and** a clone-and-run repo track
@@ -74,7 +74,7 @@ Learn-Python/
 
 ## 3. Placement path
 
-> **Built (M2, v1):** a "what does this print?" quiz at `/placement/` with 27 multiple-choice questions in course order (25 on published lessons, 2 beyond them: exceptions and classes). It stops after two misses, recommends the lesson of the first miss, and can mark earlier lessons as skipped (`placedOut` in progress; the orientation lesson is never skipped). Every answer key is verified by running the code in CI (`tools/placement.py`). Still to do from the list below: the landing choice, tiny coding tasks, per-module checkpoints, and the programmers' fast-track.
+> **Built (M2, v1):** a "what does this print?" quiz at `/placement/` with 37 multiple-choice questions in course order (35 on published lessons, 2 beyond them: generators and decorators). It stops after two misses, recommends the lesson of the first miss, and can mark earlier lessons as skipped (`placedOut` in progress; the orientation lesson is never skipped). Every answer key is verified by running the code in CI (`tools/placement.py`). Still to do from the list below: the landing choice, tiny coding tasks, per-module checkpoints, and the programmers' fast-track.
 
 1. **Landing choice:** "I'm new to programming" / "I know another language" / "Test me".
 2. **Diagnostic (~15–20 min, adaptive):** short multiple-choice, "what does this print?", and 3–4 tiny coding tasks. Questions are tagged by concept.
@@ -82,7 +82,7 @@ Learn-Python/
 4. **Fast-track for programmers:** "Python for people who already code" — compact lessons mapping familiar concepts (types, scope, loops, classes, errors) to Python idioms, then it joins the main path at Functions/Data Structures.
 5. **Module checkpoints:** passing a short checkpoint test marks a whole module as done.
 
-> **Review queue built (M3):** `content/review/questions.json` holds one or two "what does this print?" questions per lesson (projects and the orientation lesson are exempt; CI checks the coverage and runs every answer key). `/review/` asks the questions from lessons the learner really completed (not ones skipped by the placement test) on a Leitner schedule: a right answer moves a question up a box (gaps of 1, 3, 7, 14, then 30 days), a wrong or "not sure" answer sends it back to box 0 (tomorrow). Sessions are capped at 10 questions. The schedule lives in the same browser progress as everything else and is included in the backup file. Still to do from principle 5: interleaved module quizzes, and a typed-code review task.
+> **Review queue built (M3, extended in M4):** `content/review/questions.json` (60 questions now) holds one or two "what does this print?" questions per lesson (projects and the orientation lesson are exempt; CI checks the coverage and runs every answer key). `/review/` asks the questions from lessons the learner really completed (not ones skipped by the placement test) on a Leitner schedule: a right answer moves a question up a box (gaps of 1, 3, 7, 14, then 30 days), a wrong or "not sure" answer sends it back to box 0 (tomorrow). Sessions are capped at 10 questions. The schedule lives in the same browser progress as everything else and is included in the backup file. Still to do from principle 5: interleaved module quizzes, and a typed-code review task.
 
 ## 4. Curriculum (core ≈ 66 lessons + 4 projects)
 
@@ -94,9 +94,9 @@ Learn-Python/
 | 3 | Data Structures (8) | Lists, looping, slicing, sorting, tuples & unpacking, dicts, sets & choosing the right structure, comprehensions | — |
 | 4 | Functions (8) | Defining, return, defaults/args/kwargs, scope & mutation, lambdas, recursion, docstrings & type hints | Quiz engine |
 | 5 | Text & Files (6) | String methods, file I/O, `pathlib`, CSV, JSON, regex basics | — |
-| 6 | Errors & Debugging (5) | Exceptions, `try/except`, raising, debugging strategies, `logging`, context managers | Expense-tracker CLI |
-| 7 | Modules & Tooling (6) | Imports, stdlib tour (`collections`, `itertools`, `datetime`, `random`), venvs, `pip`, project layout | — |
-| 8 | OOP (8) | Classes, methods, dunder methods, inheritance, composition, `dataclasses`, properties, protocols/ABCs | Inventory or bank-account system |
+| 6 | Errors & Debugging (6) | Exceptions, `try/except`, raising, debugging strategies, `logging`, context managers, then the expense tracker | Expense tracker (built) |
+| 7 | Modules & Tooling (6, one terminal-only) | Imports, stdlib tour (`collections`, `itertools`, `datetime`, `random`), venvs, `pip`, project layout | — |
+| 8 | OOP (9) | Classes, methods, dunder methods, inheritance, composition, `dataclasses`, properties, protocols/ABCs | Bank-account system (built) |
 | 9 | Pythonic Python (7) | Iterators, generators, decorators, comprehension patterns, typing, `functools`, async intro | — |
 | 10 | Testing & Quality (5) | `pytest`, fixtures, `ruff`/formatting, Git basics, packaging a small project | Capstone: build + test + publish a mini-package |
 
@@ -122,7 +122,7 @@ Learn-Python/
 | **M1 Engine** | Web app with editor + Pyodide worker + test runner + progress; 3 sample lessons; `tools/` generates local exercises; CI checks solutions |
 | **M2 Beginner core** | Modules 0–2 complete + placement test v1 + first project |
 | **M3 Data & functions** | Modules 3–5 + review queue (spaced retrieval) |
-| **M4 Robust code** | Modules 6–8 + `learn` CLI + project 2–3 |
+| **M4 Robust code** (built) | Modules 6–8 + `learn` CLI + projects 3–4 |
 | **M5 Advanced + capstone** | Modules 9–10 + capstone + programmers' fast-track |
 | **M6 Tracks & polish** | Optional tracks, accessibility pass, mobile layout, offline PWA, contributor onboarding |
 
