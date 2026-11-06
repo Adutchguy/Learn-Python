@@ -20,6 +20,7 @@ const reviewIndex = JSON.stringify(loadReviewQuestions().map((q) => ({ id: q.id,
     </p>
     <p class="cta">
       {first && <a id="start-link" class="button primary large" href={first.href}>Start with lesson 1</a>}
+      <a class="button" href={url("fast-track/")}>I already code in another language</a>
       <a class="button" href={url("placement/")}>Already know some Python? Take the placement test</a>
       <a class="button" href={`${REPO_URL}#work-on-your-own-computer`}>Prefer your own computer?</a>
     </p>
@@ -38,7 +39,8 @@ const reviewIndex = JSON.stringify(loadReviewQuestions().map((q) => ({ id: q.id,
     </ol>
     <p class="muted">
       Not sure where to start? The <a href={url("placement/")}>placement test</a> takes about five minutes and
-      suggests the right lesson. A fast track for programmers who know another language is coming soon.
+      suggests the right lesson. If you already program in another language, the <a href={url("fast-track/")}>fast
+      track</a> skips the basics and shows what is different in Python.
     </p>
   </section>
 

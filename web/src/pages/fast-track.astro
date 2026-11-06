@@ -1,0 +1,87 @@
+---
+import Base from "../layouts/Base.astro";
+import { loadCourse, flattenLessons, loadFastTrack } from "../lib/course";
+import { url } from "../lib/paths";
+
+const modules = await loadCourse();
+const lessons = flattenLessons(modules);
+const byId = new Map(lessons.map((l) => [l.id, l]));
+const track = loadFastTrack();
+
+const skipSet = new Set(track.skip);
+const skipped = lessons.filter((l) => skipSet.has(l.id));
+const kept = lessons.filter((l) => !skipSet.has(l.id));
+const keptMinutes = kept.reduce((sum, l) => sum + l.minutes, 0);
+const skippedMinutes = skipped.reduce((sum, l) => sum + l.minutes, 0);
+const hours = (minutes: number) => (minutes >= 90 ? `${Math.round(minutes / 6) / 10} hours` : `${minutes} minutes`);
+
+const data = {
+  skip: track.skip,
+  lessons: Object.fromEntries(lessons.map((l) => [l.id, { title: l.title, href: l.href }])),
+  order: lessons.map((l) => l.id),
+  courseHref: url(),
+};
+const json = JSON.stringify(data).replace(/</g, "\\u003c");
+---
+
+<Base title="Fast track for programmers · Learn Python" description="Already code in another language? Skip the basics and learn what is different about Python.">
+  <section class="fast-track">
+    <h1>Fast track for programmers</h1>
+    <p class="lead">{track.intro}</p>
+    <p class="muted">
+      The full course is about {hours(keptMinutes + skippedMinutes)}. This route keeps {kept.length} lessons
+      (about {hours(keptMinutes)}) and lets you skim {skipped.length} (about {hours(skippedMinutes)}).
+      Skipped lessons stay available, and you can open any of them at any time.
+    </p>
+
+    <h2>What is different in Python</h2>
+    <p class="muted">Each row shows an idea you know from other languages, the Python way, and a short example with its real output.</p>
+    {
+      track.rows.map((row) => (
+        <article class="ft-row">
+          <h3>{row.topic}</h3>
+          <p class="ft-expect"><strong>Elsewhere:</strong> {row.expect}</p>
+          <p><strong>In Python:</strong> {row.python}</p>
+          {row.code && (
+            <>
+              <pre class="ft-code"><code>{row.code}</code></pre>
+              <p class="ft-output"><span class="muted">Prints:</span></p>
+              <pre class="ft-code ft-result"><code>{row.output}</code></pre>
+            </>
+          )}
+          <p class="ft-links">
+            <span class="muted">Learn it:</span>
+            {row.lessons.map((id) => byId.get(id)).filter(Boolean).map((l) => (
+              <a href={l!.href}>{l!.title}</a>
+            ))}
+          </p>
+        </article>
+      ))
+    }
+
+    <h2>Your route</h2>
+    <p>
+      One click marks the {skipped.length} skimmable lessons below as skipped (they show a ↷ on the course page). Lessons you
+      have already completed are left alone, and nothing is deleted.
+    </p>
+    <details>
+      <summary>Show the {skipped.length} lessons that will be skipped</summary>
+      <ul class="ft-skip-list">
+        {skipped.map((l) => (
+          <li><a href={l.href}>{l.title}</a> <span class="muted">({l.minutes} min)</span></li>
+        ))}
+      </ul>
+    </details>
+    <p class="row">
+      <button id="btn-use-route" type="button" class="button primary large">Use the fast track (skip {skipped.length} lessons)</button>
+      <a class="button" href={url("placement/")}>Or take the placement test</a>
+      <a class="button" href={url()}>Back to the course</a>
+    </p>
+    <p id="route-message" class="notice" role="status" aria-live="polite"></p>
+  </section>
+
+  <script id="fast-track-data" type="application/json" set:html={json} />
+  <script>
+    import "../scripts/fast-track-page";
+  </script>
+</Base>

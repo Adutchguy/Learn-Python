@@ -105,3 +105,23 @@ export function loadReviewQuestions(): PlacementQuestion[] {
   const file = path.join(CONTENT_DIR, "review", "questions.json");
   return JSON.parse(fs.readFileSync(file, "utf8")).questions as PlacementQuestion[];
 }
+
+export interface FastTrackRow {
+  topic: string;
+  expect: string;
+  python: string;
+  code?: string;
+  output?: string;
+  lessons: string[];
+}
+
+export interface FastTrack {
+  intro: string;
+  skip: string[];
+  rows: FastTrackRow[];
+}
+
+export function loadFastTrack(): FastTrack {
+  const file = path.join(CONTENT_DIR, "fast-track", "path.json");
+  return JSON.parse(fs.readFileSync(file, "utf8")) as FastTrack;
+}

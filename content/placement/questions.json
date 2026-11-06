@@ -494,24 +494,50 @@
       "explanation": "A property is read like an attribute, so C(4).double is already the number 8, and calling the number with () raises a TypeError."
     },
     {
-      "id": "generator-sum",
-      "lesson": null,
-      "topic": "Generators",
+      "id": "iterator-exhausted",
+      "lesson": "09-pythonic-python/01-iterators-and-iterables",
       "prompt": "What does this program print?",
-      "code": "def count_up(n):\n    for i in range(n):\n        yield i\n\nprint(sum(count_up(4)))",
+      "code": "it = iter(\"abc\")\nfor ch in it:\n    break\nprint(list(it))",
       "options": [
-        "4",
-        "10",
-        "It causes an error",
-        "6"
+        "['a', 'b', 'c']",
+        "['b', 'c']",
+        "['c']",
+        "[]"
+      ],
+      "answer": 1,
+      "explanation": "The loop took 'a' from the iterator before break. An iterator remembers its position, so list(it) collects what is left: 'b' and 'c'."
+    },
+    {
+      "id": "generator-lazy",
+      "lesson": "09-pythonic-python/02-generators",
+      "prompt": "What does this program print?",
+      "code": "def numbers():\n    print(\"a\")\n    yield 1\n    print(\"b\")\n    yield 2\n\nfor n in numbers():\n    print(n)",
+      "options": [
+        "a\nb\n1\n2",
+        "1\n2",
+        "a\n1\nb\n2",
+        "a\n1\n2"
+      ],
+      "answer": 2,
+      "explanation": "A generator runs only as far as the next yield each time the loop asks for a value, so the prints interleave with the loop body."
+    },
+    {
+      "id": "nested-comprehension",
+      "lesson": "09-pythonic-python/03-comprehension-patterns",
+      "prompt": "What does this program print?",
+      "code": "print([c for row in [[1, 2], [3]] for c in row])",
+      "options": [
+        "[[1, 2], [3]]",
+        "[1, 2]",
+        "[3]",
+        "[1, 2, 3]"
       ],
       "answer": 3,
-      "explanation": "The generator produces 0, 1, 2 and 3 one at a time, and sum adds them up: 6."
+      "explanation": "The two for parts read like nested loops, outer first: for each row, for each c in the row. The result is one flat list."
     },
     {
       "id": "decorator-wraps",
-      "lesson": null,
-      "topic": "Decorators",
+      "lesson": "09-pythonic-python/04-decorators",
       "prompt": "What does this program print?",
       "code": "def shout(func):\n    def wrapper(*args):\n        return func(*args).upper() + \"!\"\n    return wrapper\n\n@shout\ndef greet(name):\n    return \"hi \" + name\n\nprint(greet(\"bo\"))",
       "options": [
@@ -522,6 +548,148 @@
       ],
       "answer": 0,
       "explanation": "@shout replaces greet with wrapper, which calls the original, upper-cases the result and adds an exclamation mark."
+    },
+    {
+      "id": "reduce-fold",
+      "lesson": "09-pythonic-python/05-functools",
+      "prompt": "What does this program print?",
+      "code": "from functools import reduce\n\nprint(reduce(lambda a, b: a + b, [\"x\", \"y\", \"z\"]))",
+      "options": [
+        "x y z",
+        "xyz",
+        "['x', 'y', 'z']",
+        "zyx"
+      ],
+      "answer": 1,
+      "explanation": "reduce combines the items two at a time: 'x' + 'y' is 'xy', then 'xy' + 'z' is 'xyz'."
+    },
+    {
+      "id": "hint-not-enforced",
+      "lesson": "09-pythonic-python/06-type-hints",
+      "prompt": "What does this program print?",
+      "code": "def greet(times: str) -> str:\n    return times * 2\n\nprint(greet(3))",
+      "options": [
+        "33",
+        "3",
+        "6",
+        "It causes a TypeError"
+      ],
+      "answer": 2,
+      "explanation": "Type hints are documentation for people and tools; Python does not check them while running. 3 * 2 is 6."
+    },
+    {
+      "id": "async-gather-order",
+      "lesson": "09-pythonic-python/07-async-basics",
+      "prompt": "What does this program print?",
+      "code": "import asyncio\n\nasync def job(name, delay):\n    await asyncio.sleep(delay)\n    return name\n\nasync def main():\n    print(await asyncio.gather(job(\"a\", 0.02), job(\"b\", 0.01)))\n\nasyncio.run(main())",
+      "options": [
+        "['b', 'a']",
+        "a",
+        "It causes an error",
+        "['a', 'b']"
+      ],
+      "answer": 3,
+      "explanation": "gather returns the results in the order the jobs were given, even though b finishes first."
+    },
+    {
+      "id": "assert-finds-bug",
+      "lesson": "10-testing-and-quality/01-testing-with-pytest",
+      "prompt": "What does this program print?",
+      "code": "def is_even(n):\n    return n % 2 == 1\n\ntry:\n    assert is_even(4)\n    print(\"ok\")\nexcept AssertionError:\n    print(\"bug found\")",
+      "options": [
+        "bug found",
+        "ok",
+        "True",
+        "It causes an error"
+      ],
+      "answer": 0,
+      "explanation": "The function is wrong (it tests for odd), so is_even(4) is False, the assert fails and the except block runs."
+    },
+    {
+      "id": "parametrize-idea",
+      "lesson": "10-testing-and-quality/02-fixtures-and-parametrize",
+      "prompt": "What does this program print?",
+      "code": "def repeat_with(values):\n    def decorator(test):\n        def runner():\n            return [test(v) for v in values]\n        return runner\n    return decorator\n\n@repeat_with([1, 2, 3])\ndef check(n):\n    return n * n\n\nprint(check())",
+      "options": [
+        "[1, 2, 3]",
+        "[1, 4, 9]",
+        "14",
+        "It causes an error"
+      ],
+      "answer": 1,
+      "explanation": "The decorator replaces check with runner, which calls the original once per value and collects the results."
+    },
+    {
+      "id": "mutable-default",
+      "lesson": "10-testing-and-quality/03-readable-code-and-linting",
+      "prompt": "What does this program print?",
+      "code": "def collect(x, bucket=[]):\n    bucket.append(x)\n    return len(bucket)\n\nprint(collect(\"a\"), collect(\"b\"))",
+      "options": [
+        "1 1",
+        "2 2",
+        "1 2",
+        "2 1"
+      ],
+      "answer": 2,
+      "explanation": "The default list is created once and shared, so the second call sees the item from the first. That is why linters warn about mutable defaults."
+    },
+    {
+      "id": "subprocess-run",
+      "lesson": "10-testing-and-quality/04-git-basics",
+      "prompt": "What does this program print?",
+      "code": "import subprocess\nimport sys\n\nresult = subprocess.run([sys.executable, \"-c\", \"print(1 + 1)\"], capture_output=True, text=True)\nprint(result.stdout.strip(), result.returncode)",
+      "options": [
+        "print(1 + 1) 0",
+        "2",
+        "0 2",
+        "2 0"
+      ],
+      "answer": 3,
+      "explanation": "subprocess.run runs another program and captures what it printed (2). A return code of 0 means it succeeded."
+    },
+    {
+      "id": "tomllib-read",
+      "lesson": "10-testing-and-quality/05-packaging-a-project",
+      "prompt": "What does this program print?",
+      "code": "import tomllib\n\ntext = \"\"\"\n[project]\nname = \"demo\"\nversion = \"1.2\"\n\"\"\"\nprint(tomllib.loads(text)[\"project\"][\"version\"])",
+      "options": [
+        "1.2",
+        "version",
+        "demo",
+        "[project]"
+      ],
+      "answer": 0,
+      "explanation": "tomllib turns TOML into dictionaries: the [project] table becomes data[\"project\"], and version is a key inside it."
+    },
+    {
+      "id": "argparse-flags",
+      "lesson": null,
+      "topic": "Command-line programs",
+      "prompt": "What does this program print?",
+      "code": "import argparse\n\nparser = argparse.ArgumentParser()\nparser.add_argument(\"name\")\nparser.add_argument(\"--shout\", action=\"store_true\")\nargs = parser.parse_args([\"bo\", \"--shout\"])\nprint(args.name.upper() if args.shout else args.name)",
+      "options": [
+        "bo",
+        "BO",
+        "['bo', '--shout']",
+        "It causes an error"
+      ],
+      "answer": 1,
+      "explanation": "argparse turns the argument list into attributes: name is 'bo' and the --shout flag is True, so the name is shouted."
+    },
+    {
+      "id": "thread-pool-map",
+      "lesson": null,
+      "topic": "Threads and processes",
+      "prompt": "What does this program print?",
+      "code": "from concurrent.futures import ThreadPoolExecutor\n\nwith ThreadPoolExecutor() as pool:\n    print(list(pool.map(len, [\"a\", \"bb\", \"ccc\"])))",
+      "options": [
+        "6",
+        "[3, 2, 1]",
+        "[1, 2, 3]",
+        "It causes an error"
+      ],
+      "answer": 2,
+      "explanation": "pool.map runs the function on every item using several threads, and still returns the results in the order of the input."
     }
   ]
 }

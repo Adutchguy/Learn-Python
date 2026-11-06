@@ -1,0 +1,4 @@
+{
+  "title": "Testing and Quality",
+  "description": "Prove that your code works with pytest, keep it readable and consistent, track it with Git, and package it so other people can install it. Ends with a capstone project."
+}

@@ -35,7 +35,7 @@ function refresh() {
     el.classList.toggle("done", isDone);
     el.querySelector<HTMLElement>(".check")!.textContent = wasSkipped ? "↷" : isDone ? "✔" : "";
     el.querySelector<HTMLElement>(".sr-status")!.textContent = wasSkipped
-      ? " (skipped by the placement test)"
+      ? " (skipped)"
       : isDone
         ? " (completed)"
         : "";
@@ -44,7 +44,7 @@ function refresh() {
     else if (!firstTodo) firstTodo = el;
   }
   if (summary) {
-    const extra = skipped > 0 ? ` (${skipped} skipped by the placement test)` : "";
+    const extra = skipped > 0 ? ` (${skipped} skipped)` : "";
     summary.textContent = done === 0 ? "" : `${done} of ${lessonEls.length} lessons complete${extra}`;
   }
   if (startLink) {

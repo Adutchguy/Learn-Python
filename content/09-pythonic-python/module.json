@@ -1,0 +1,4 @@
+{
+  "title": "Pythonic Python",
+  "description": "Write code the way experienced Python programmers do: iterators and generators, comprehension patterns, decorators, functools, type hints and a first look at async."
+}

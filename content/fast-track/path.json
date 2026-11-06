@@ -1,0 +1,221 @@
+{
+  "intro": "You already program, so you do not need to be told what a loop or a function is. This route skips the lessons that teach ideas you already know and keeps the ones that cover how Python does things differently: its truthiness rules, slicing, unpacking, comprehensions, argument passing, exceptions, classes, generators, decorators and tooling.",
+  "skip": [
+    "01-foundations/01-hello-world",
+    "01-foundations/02-variables",
+    "01-foundations/05-input-and-conversion",
+    "02-control-flow/01-if-else",
+    "02-control-flow/03-while-loops",
+    "02-control-flow/05-break-and-continue",
+    "02-control-flow/06-project-number-guessing-game",
+    "03-data-structures/01-lists",
+    "04-functions/01-defining-functions",
+    "04-functions/02-return-values",
+    "04-functions/06-recursion",
+    "04-functions/08-project-quiz-engine",
+    "05-text-and-files/01-string-methods",
+    "05-text-and-files/04-csv-files",
+    "05-text-and-files/06-regular-expressions",
+    "06-errors-and-debugging/03-debugging-strategies",
+    "06-errors-and-debugging/06-project-expense-tracker",
+    "08-oop/02-methods",
+    "08-oop/05-composition",
+    "08-oop/09-project-bank"
+  ],
+  "rows": [
+    {
+      "topic": "Variables and types",
+      "expect": "Variables are declared with a type and the type is fixed.",
+      "python": "A variable is just a name for a value. The type belongs to the value, so the same name can refer to different types over time.",
+      "code": "x = 5\nx = \"five\"\nprint(type(x).__name__, isinstance(x, str))",
+      "output": "str True",
+      "lessons": [
+        "01-foundations/04-data-types"
+      ]
+    },
+    {
+      "topic": "Numbers",
+      "expect": "Integers overflow, and / on integers divides as integers.",
+      "python": "int has no size limit, / is always true division, // floors (towards minus infinity) and % follows the sign of the divisor.",
+      "code": "print(2 ** 100, 7 / 2, 7 // 2, -7 // 2, -7 % 3)",
+      "output": "1267650600228229401496703205376 3.5 3 -4 2",
+      "lessons": [
+        "01-foundations/06-arithmetic"
+      ]
+    },
+    {
+      "topic": "Truthiness",
+      "expect": "Conditions must be booleans.",
+      "python": "Any value can be a condition: 0, None, empty text and empty containers are falsy. and/or return one of their operands, not just True or False.",
+      "code": "print(bool([]), bool(\"0\"), [] or \"default\", 0 and 5)",
+      "output": "False True default 0",
+      "lessons": [
+        "01-foundations/09-booleans-and-comparisons"
+      ]
+    },
+    {
+      "topic": "Strings and slicing",
+      "expect": "Strings are indexed one character at a time, and you build copies by hand.",
+      "python": "Strings are immutable sequences. Slices [start:stop:step] work on every sequence, and negative indexes count from the end.",
+      "code": "s = \"python\"\nprint(s[1:4], s[::-1], s[-2:])",
+      "output": "yth nohtyp on",
+      "lessons": [
+        "01-foundations/07-strings",
+        "03-data-structures/03-slicing"
+      ]
+    },
+    {
+      "topic": "Looping",
+      "expect": "for (i = 0; i < n; i++) with an index variable.",
+      "python": "for loops walk over items directly. Use enumerate when you need the position and zip to walk several sequences together.",
+      "code": "for i, (letter, number) in enumerate(zip(\"ab\", [10, 20])):\n    print(i, letter, number)",
+      "output": "0 a 10\n1 b 20",
+      "lessons": [
+        "02-control-flow/04-for-loops-and-range",
+        "03-data-structures/02-looping-over-lists"
+      ]
+    },
+    {
+      "topic": "Tuples and unpacking",
+      "expect": "Functions return one value, or you create a struct.",
+      "python": "Tuples group values, and unpacking takes them apart in one line, including swapping and collecting the rest with *.",
+      "code": "first, (second, *rest) = 1, (2, 3, 4)\nprint(first, second, rest)\na, b = 1, 2\na, b = b, a\nprint(a, b)",
+      "output": "1 2 [3, 4]\n2 1",
+      "lessons": [
+        "03-data-structures/05-tuples-and-unpacking"
+      ]
+    },
+    {
+      "topic": "Dictionaries and sets",
+      "expect": "Hash maps with a rigid API; sets from a library.",
+      "python": "dict and set are built in and have literals. dict.get gives defaults, dicts keep insertion order, and sets support | & - operators.",
+      "code": "counts = {}\nfor ch in \"hello\":\n    counts[ch] = counts.get(ch, 0) + 1\nprint(counts, {1, 2} | {2, 3})",
+      "output": "{'h': 1, 'e': 1, 'l': 2, 'o': 1} {1, 2, 3}",
+      "lessons": [
+        "03-data-structures/06-dictionaries",
+        "03-data-structures/07-sets-and-choosing"
+      ]
+    },
+    {
+      "topic": "Comprehensions",
+      "expect": "map and filter with lambdas, or loops that fill a list.",
+      "python": "A comprehension builds a list, dict or set in one readable expression. This is the idiomatic replacement for most small loops.",
+      "code": "print([n * n for n in range(6) if n % 2 == 0], {c: ord(c) for c in \"ab\"})",
+      "output": "[0, 4, 16] {'a': 97, 'b': 98}",
+      "lessons": [
+        "03-data-structures/08-comprehensions",
+        "09-pythonic-python/03-comprehension-patterns"
+      ]
+    },
+    {
+      "topic": "Function arguments",
+      "expect": "Overloads and optional parameters.",
+      "python": "One function takes defaults, keyword arguments, *args and **kwargs. Default values are created once, when the function is defined.",
+      "code": "def f(a, b=2, *args, **kw):\n    return a, b, args, kw\n\nprint(f(1, 3, 4, x=5))",
+      "output": "(1, 3, (4,), {'x': 5})",
+      "lessons": [
+        "04-functions/03-default-and-keyword-arguments",
+        "04-functions/05-functions-as-values-and-lambdas"
+      ]
+    },
+    {
+      "topic": "Names, scope and mutation",
+      "expect": "Pass by value or pass by reference.",
+      "python": "Arguments are names bound to the same objects. Mutating the object is visible to the caller, but rebinding the name is not.",
+      "code": "def add(items):\n    items.append(1)\n    items = [99]\n\nmine = []\nadd(mine)\nprint(mine)",
+      "output": "[1]",
+      "lessons": [
+        "04-functions/04-scope-and-mutation"
+      ]
+    },
+    {
+      "topic": "Exceptions",
+      "expect": "Check first, then act (look before you leap).",
+      "python": "Python prefers to try the operation and handle the failure. try/except/else/finally is the full form; raise your own exceptions with built-in or custom classes.",
+      "code": "try:\n    value = int(\"12\")\nexcept ValueError:\n    print(\"bad\")\nelse:\n    print(\"ok\", value)\nfinally:\n    print(\"done\")",
+      "output": "ok 12\ndone",
+      "lessons": [
+        "06-errors-and-debugging/01-try-and-except",
+        "06-errors-and-debugging/02-raising-exceptions"
+      ]
+    },
+    {
+      "topic": "Resources and with",
+      "expect": "try/finally or destructors to release resources.",
+      "python": "A with statement guarantees clean-up for files, locks and your own context managers.",
+      "code": "from io import StringIO\n\nwith StringIO(\"a\\nb\") as f:\n    print([line.strip() for line in f])\nprint(f.closed)",
+      "output": "['a', 'b']\nTrue",
+      "lessons": [
+        "06-errors-and-debugging/05-context-managers",
+        "05-text-and-files/02-reading-and-writing-files"
+      ]
+    },
+    {
+      "topic": "Classes",
+      "expect": "Declared fields, access modifiers, getters and setters.",
+      "python": "self is explicit, fields are created by assignment, and privacy is a naming convention (_name). Dunder methods such as __repr__ and __eq__ plug your class into the language.",
+      "code": "class P:\n    def __init__(self, x):\n        self.x = x\n\n    def __repr__(self):\n        return f\"P({self.x})\"\n\n    def __eq__(self, other):\n        return self.x == other.x\n\nprint(P(1), P(1) == P(1))",
+      "output": "P(1) True",
+      "lessons": [
+        "08-oop/01-classes-and-objects",
+        "08-oop/03-dunder-methods",
+        "08-oop/04-inheritance"
+      ]
+    },
+    {
+      "topic": "Dataclasses and properties",
+      "expect": "Boilerplate constructors, equals and toString, plus getters and setters.",
+      "python": "@dataclass writes the boilerplate for you, and @property turns a method into a validated attribute without changing how callers use it.",
+      "code": "from dataclasses import dataclass\n\n@dataclass(order=True)\nclass V:\n    major: int\n    minor: int = 0\n\nprint(V(1, 2) < V(1, 3), V(1))",
+      "output": "True V(major=1, minor=0)",
+      "lessons": [
+        "08-oop/06-dataclasses",
+        "08-oop/07-properties",
+        "08-oop/08-abstract-classes-and-protocols"
+      ]
+    },
+    {
+      "topic": "Iterators and generators",
+      "expect": "Iterator classes, or collections built up front.",
+      "python": "yield turns a function into a lazy sequence. Generators can be endless and use almost no memory.",
+      "code": "from itertools import islice\n\ndef evens():\n    n = 0\n    while True:\n        yield n\n        n += 2\n\nprint(list(islice(evens(), 4)))",
+      "output": "[0, 2, 4, 6]",
+      "lessons": [
+        "09-pythonic-python/01-iterators-and-iterables",
+        "09-pythonic-python/02-generators"
+      ]
+    },
+    {
+      "topic": "Decorators",
+      "expect": "Annotations, aspects or wrapper classes.",
+      "python": "Functions are values, so a decorator is a function that takes a function and returns a new one. @name above a def applies it.",
+      "code": "def log(func):\n    def wrapper(*args):\n        print(\"call\", func.__name__)\n        return func(*args)\n    return wrapper\n\n@log\ndef add(a, b):\n    return a + b\n\nprint(add(1, 2))",
+      "output": "call add\n3",
+      "lessons": [
+        "09-pythonic-python/04-decorators",
+        "09-pythonic-python/05-functools"
+      ]
+    },
+    {
+      "topic": "Type hints",
+      "expect": "Static typing checked by the compiler.",
+      "python": "Type hints are optional documentation that tools such as mypy check. Python itself ignores them at runtime.",
+      "code": "def f(x: int) -> str:\n    return x\n\nprint(f(\"hi\"))",
+      "output": "hi",
+      "lessons": [
+        "04-functions/07-docstrings-and-type-hints",
+        "09-pythonic-python/06-type-hints"
+      ]
+    },
+    {
+      "topic": "Environments, testing and packaging",
+      "expect": "Build tools, XML project files and separate test frameworks.",
+      "python": "Each project gets a virtual environment (venv) and uses pip. Tests are plain functions with assert, run by pytest. A pyproject.toml describes how to build and install the project.",
+      "lessons": [
+        "07-modules-and-tooling/05-packages-pip-and-virtual-environments",
+        "10-testing-and-quality/01-testing-with-pytest",
+        "10-testing-and-quality/05-packaging-a-project"
+      ]
+    }
+  ]
+}

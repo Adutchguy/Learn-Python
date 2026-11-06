@@ -28,7 +28,7 @@ EXERCISES = ROOT / "exercises"
 
 LESSON_FILES = ("lesson.md", "starter.py", "solution.py", "test_exercise.py")
 # Folders inside content/ that hold course-wide material rather than a module of lessons.
-NON_COURSE_DIRS = {"placement", "review"}
+NON_COURSE_DIRS = {"placement", "review", "fast-track"}
 SLUG_RE = re.compile(r"^\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*$")
 REQUIRED_HEADINGS = ("## Your turn", "## Recap")
 HINT_COUNT = 3

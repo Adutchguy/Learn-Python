@@ -846,6 +846,274 @@
       ],
       "answer": 3,
       "explanation": "Square never implements the abstract method area(), so Python refuses to create a Square: TypeError: Can't instantiate abstract class."
+    },
+    {
+      "id": "01-iterators-and-iterables-1",
+      "lesson": "09-pythonic-python/01-iterators-and-iterables",
+      "prompt": "What does this program print?",
+      "code": "it = iter([1, 2, 3])\nnext(it)\nprint(list(it))",
+      "options": [
+        "[2, 3]",
+        "[1, 2, 3]",
+        "[3]",
+        "[1]"
+      ],
+      "answer": 0,
+      "explanation": "next(it) already took the 1, so the iterator only has 2 and 3 left for list() to collect."
+    },
+    {
+      "id": "01-iterators-and-iterables-2",
+      "lesson": "09-pythonic-python/01-iterators-and-iterables",
+      "prompt": "This program stops with an error. Which kind?",
+      "code": "it = iter([])\nnext(it)",
+      "kind": "error",
+      "options": [
+        "IndexError",
+        "StopIteration",
+        "ValueError",
+        "KeyError"
+      ],
+      "answer": 1,
+      "explanation": "Asking an exhausted iterator for another item raises StopIteration. A for loop catches it for you; a direct next() does not."
+    },
+    {
+      "id": "02-generators-1",
+      "lesson": "09-pythonic-python/02-generators",
+      "prompt": "What does this program print?",
+      "code": "def gen():\n    print(\"start\")\n    yield 1\n    print(\"end\")\n\ng = gen()\nprint(\"created\")\nprint(next(g))",
+      "options": [
+        "start\ncreated\n1",
+        "created\n1",
+        "created\nstart\n1",
+        "created\nstart\n1\nend"
+      ],
+      "answer": 2,
+      "explanation": "Calling gen() runs nothing yet. The first next() runs the body up to the yield, which prints start and hands out 1."
+    },
+    {
+      "id": "02-generators-2",
+      "lesson": "09-pythonic-python/02-generators",
+      "prompt": "What does this program print?",
+      "code": "g = (n * n for n in range(3))\nprint(list(g), list(g))",
+      "options": [
+        "[0, 1, 4] [0, 1, 4]",
+        "[] []",
+        "[0, 1, 4]",
+        "[0, 1, 4] []"
+      ],
+      "answer": 3,
+      "explanation": "A generator is used up after one pass, so the second list() finds nothing left."
+    },
+    {
+      "id": "03-comprehension-patterns-1",
+      "lesson": "09-pythonic-python/03-comprehension-patterns",
+      "prompt": "What does this program print?",
+      "code": "print({word: len(word) for word in [\"hi\", \"hey\", \"hi\"]})",
+      "options": [
+        "{'hi': 2, 'hey': 3}",
+        "{'hi': 2, 'hey': 3, 'hi': 2}",
+        "[2, 3, 2]",
+        "{2: 'hi', 3: 'hey'}"
+      ],
+      "answer": 0,
+      "explanation": "A dict comprehension builds one key at a time, and a repeated key simply overwrites itself, so there are two entries."
+    },
+    {
+      "id": "03-comprehension-patterns-2",
+      "lesson": "09-pythonic-python/03-comprehension-patterns",
+      "prompt": "What does this program print?",
+      "code": "print([x if x % 2 else -x for x in range(4)])",
+      "options": [
+        "[1, 3]",
+        "[0, 1, -2, 3]",
+        "[0, -1, 2, -3]",
+        "[0, 1, 2, 3]"
+      ],
+      "answer": 1,
+      "explanation": "The conditional expression picks x for odd numbers and -x for even numbers, for every x from 0 to 3."
+    },
+    {
+      "id": "04-decorators-1",
+      "lesson": "09-pythonic-python/04-decorators",
+      "prompt": "What does this program print?",
+      "code": "def twice(func):\n    def wrapper(*args):\n        func(*args)\n        return func(*args)\n    return wrapper\n\n@twice\ndef hello(name):\n    print(\"hi\", name)\n\nhello(\"Bo\")",
+      "options": [
+        "hi Bo",
+        "hi Bo\nhi Bo\nhi Bo",
+        "hi Bo\nhi Bo",
+        "Nothing: the decorator only defines wrapper"
+      ],
+      "answer": 2,
+      "explanation": "@twice replaces hello with wrapper, which calls the original function two times."
+    },
+    {
+      "id": "04-decorators-2",
+      "lesson": "09-pythonic-python/04-decorators",
+      "prompt": "What does this program print?",
+      "code": "def deco(func):\n    def wrapper(*args, **kwargs):\n        return func(*args, **kwargs)\n    return wrapper\n\n@deco\ndef add(a, b):\n    \"\"\"Add.\"\"\"\n    return a + b\n\nprint(add.__name__)",
+      "options": [
+        "add",
+        "deco",
+        "Add.",
+        "wrapper"
+      ],
+      "answer": 3,
+      "explanation": "Without functools.wraps the decorated function really is wrapper, so it loses its own name and docstring."
+    },
+    {
+      "id": "05-functools-1",
+      "lesson": "09-pythonic-python/05-functools",
+      "prompt": "What does this program print?",
+      "code": "from functools import partial\n\nbinary = partial(int, base=2)\nprint(binary(\"101\"))",
+      "options": [
+        "5",
+        "101",
+        "2",
+        "It causes an error"
+      ],
+      "answer": 0,
+      "explanation": "partial pre-fills base=2, so binary(\"101\") is int(\"101\", base=2), which is 5."
+    },
+    {
+      "id": "05-functools-2",
+      "lesson": "09-pythonic-python/05-functools",
+      "prompt": "What does this program print?",
+      "code": "from functools import reduce\n\nprint(reduce(lambda total, n: total * 10 + n, [1, 2, 3], 0))",
+      "options": [
+        "6",
+        "123",
+        "321",
+        "1230"
+      ],
+      "answer": 1,
+      "explanation": "reduce feeds the running total and each item to the function: 0, then 1, then 12, then 123."
+    },
+    {
+      "id": "06-type-hints-1",
+      "lesson": "09-pythonic-python/06-type-hints",
+      "prompt": "What does this program print?",
+      "code": "def double(x: int) -> int:\n    return x * 2\n\nprint(double(\"ab\"))",
+      "options": [
+        "It causes a TypeError",
+        "ab",
+        "abab",
+        "4"
+      ],
+      "answer": 2,
+      "explanation": "Type hints are not checked when the program runs. \"ab\" * 2 is valid Python, so it prints abab. A tool such as mypy would warn you before running."
+    },
+    {
+      "id": "06-type-hints-2",
+      "lesson": "09-pythonic-python/06-type-hints",
+      "prompt": "What does this program print?",
+      "code": "count: int = \"three\"\nprint(count)",
+      "options": [
+        "It causes an error",
+        "3",
+        "None",
+        "three"
+      ],
+      "answer": 3,
+      "explanation": "The hint says int, but Python does not enforce it, so the variable simply holds the text."
+    },
+    {
+      "id": "07-async-basics-1",
+      "lesson": "09-pythonic-python/07-async-basics",
+      "prompt": "What does this program print?",
+      "code": "import asyncio\n\nasync def work(name):\n    print(\"start\", name)\n    await asyncio.sleep(0.01)\n    print(\"end\", name)\n\nasync def main():\n    await asyncio.gather(work(\"a\"), work(\"b\"))\n\nasyncio.run(main())",
+      "options": [
+        "start a\nstart b\nend a\nend b",
+        "start a\nend a\nstart b\nend b",
+        "start a\nstart b\nend b\nend a",
+        "end a\nend b"
+      ],
+      "answer": 0,
+      "explanation": "gather starts both jobs, and each one pauses at the await, so both start before either ends. They wake in the order they went to sleep."
+    },
+    {
+      "id": "07-async-basics-2",
+      "lesson": "09-pythonic-python/07-async-basics",
+      "prompt": "This program stops with an error. Which kind?",
+      "code": "async def get():\n    return 1\n\nvalue = await get()\nprint(value)",
+      "kind": "error",
+      "options": [
+        "RuntimeError",
+        "SyntaxError",
+        "TypeError",
+        "NameError"
+      ],
+      "answer": 1,
+      "explanation": "await is only allowed inside an async def function, so Python refuses the line before running anything."
+    },
+    {
+      "id": "01-testing-with-pytest-1",
+      "lesson": "10-testing-and-quality/01-testing-with-pytest",
+      "prompt": "What does this program print?",
+      "code": "def add(a, b):\n    return a - b\n\ndef test_add():\n    assert add(2, 3) == 5\n\ntry:\n    test_add()\n    print(\"pass\")\nexcept AssertionError:\n    print(\"fail\")",
+      "options": [
+        "pass",
+        "5",
+        "fail",
+        "It causes an error"
+      ],
+      "answer": 2,
+      "explanation": "The function has a bug (it subtracts), so the assert is false and raises AssertionError. That is exactly how a test reports a failure."
+    },
+    {
+      "id": "02-fixtures-and-parametrize-1",
+      "lesson": "10-testing-and-quality/02-fixtures-and-parametrize",
+      "prompt": "What does this program print?",
+      "code": "def parametrize(values):\n    def decorator(test):\n        def run():\n            for value in values:\n                test(value)\n        return run\n    return decorator\n\n@parametrize([1, 2, 3])\ndef test_double(n):\n    print(n * 2)\n\ntest_double()",
+      "options": [
+        "6",
+        "2\n4",
+        "[2, 4, 6]",
+        "2\n4\n6"
+      ],
+      "answer": 3,
+      "explanation": "This is the idea behind pytest.mark.parametrize: one test body is run once for every value in the list."
+    },
+    {
+      "id": "03-readable-code-and-linting-1",
+      "lesson": "10-testing-and-quality/03-readable-code-and-linting",
+      "prompt": "What does this program print?",
+      "code": "def add(item, items=[]):\n    items.append(item)\n    return items\n\nadd(1)\nprint(add(2))",
+      "options": [
+        "[1, 2]",
+        "[2]",
+        "[1]",
+        "[]"
+      ],
+      "answer": 0,
+      "explanation": "The default list is created once and shared by every call, so the second call sees the 1 left by the first. Use None as the default instead."
+    },
+    {
+      "id": "04-git-basics-1",
+      "lesson": "10-testing-and-quality/04-git-basics",
+      "prompt": "What does this program print?",
+      "code": "import shlex\n\nprint(shlex.split(\"git commit -m 'Fix bug'\"))",
+      "options": [
+        "['git commit -m', 'Fix bug']",
+        "['git', 'commit', '-m', 'Fix bug']",
+        "['git', 'commit', '-m', \"'Fix\", \"bug'\"]",
+        "['git', 'commit', '-m Fix bug']"
+      ],
+      "answer": 1,
+      "explanation": "shlex.split splits a command line the way a shell does: the quotes keep Fix bug together as one argument. This is the form subprocess.run expects."
+    },
+    {
+      "id": "05-packaging-a-project-1",
+      "lesson": "10-testing-and-quality/05-packaging-a-project",
+      "prompt": "What does this program print?",
+      "code": "import tomllib\n\ndata = tomllib.loads('[project]\\nname = \"demo\"\\ndependencies = [\"rich\"]')\nprint(data[\"project\"][\"dependencies\"][0], data[\"project\"][\"name\"].upper())",
+      "options": [
+        "demo RICH",
+        "rich demo",
+        "rich DEMO",
+        "[\"rich\"] DEMO"
+      ],
+      "answer": 2,
+      "explanation": "tomllib turns TOML into ordinary dictionaries and lists: dependencies is a list whose first item is rich, and name is the text demo."
     }
   ]
 }

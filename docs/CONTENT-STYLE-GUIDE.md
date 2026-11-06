@@ -99,7 +99,13 @@ Patch it in the test with `monkeypatch.setattr("builtins.input", lambda prompt="
 
 ## `local_only` lessons
 
-Browsers cannot provide real network sockets, subprocesses or threads. Lessons about those topics set `local_only: true`. They appear on the website with instructions to use the local track, and the browser-runner tests skip them. Their tests may use any pytest feature.
+Browsers cannot provide real network sockets, subprocesses or threads. Lessons about those topics set `local_only: true`. They appear on the website with instructions to use the local track, and the browser-runner tests skip them. Their tests may use any pytest feature. In practice that means `parametrize`, fixtures, `skip`, `asyncio.run`, Git, packaging tools and anything else the in-browser pytest cannot do.
+
+## Teaching testing and code quality
+
+- **Tests-of-tests:** to teach testing, have the learner write the tests. The checker runs them against a correct reference and against deliberate mutants, and the tests must fail on every mutant (see `10-testing-and-quality/01` and the capstone).
+- **Checking code style in the browser:** use `ast` plus `linecache.getlines(exercise.__file__)`. The runner registers the learner's source there, so this works in the browser and locally.
+- **Each test imports `exercise` fresh:** the runner removes it from `sys.modules` between tests, so do not rely on state surviving.
 
 ## Checklist before opening a pull request
 

@@ -7,7 +7,7 @@ A free, open-source way to learn Python quickly and thoroughly, with **no sign-u
 
 Both tracks come from the same lesson files, so they always match.
 
-> **Status:** early but usable. 59 lessons are written, from Start Here through Errors & Debugging, Modules & Tooling and Object-Oriented Programming, with four projects (a number-guessing game, a quiz engine, an expense tracker and a bank system). There is a placement test that suggests where to start and a spaced-review queue that brings finished lessons back at growing gaps. More modules are being added; see [docs/PLAN.md](docs/PLAN.md) for the full roadmap.
+> **Status:** early but usable. 72 lessons are written, from Start Here through Pythonic Python (iterators, generators, decorators, `functools`, type hints, async) and Testing & Quality (pytest, fixtures, linting, Git, packaging), with five projects: a number-guessing game, a quiz engine, an expense tracker, a bank system and a capstone where you build, test and publish a small package. There is a placement test that suggests where to start, a [fast track](web/src/pages/fast-track.astro) for people who already code in another language (it skips the lessons you do not need), and a spaced-review queue that brings finished lessons back at growing gaps. Optional tracks and polish are next; see [docs/PLAN.md](docs/PLAN.md) for the full roadmap.
 
 ## How learning works here
 
