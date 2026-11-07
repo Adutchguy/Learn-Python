@@ -6,7 +6,7 @@
  * no longer support classic workers, so Pyodide is loaded from its pyodide.mjs file.
  *
  * Protocol (messages to the worker):
- *   { type: "init", indexURL, runnerUrl }
+ *   { type: "init", indexURL, runnerUrl, packages }   (packages: Pyodide package names to preload)
  *   { type: "run",  id, source, stdin }
  *   { type: "test", id, source, tests }
  * Messages from the worker:
@@ -23,6 +23,14 @@ self.onmessage = async (event) => {
     if (msg.type === "init") {
       const { loadPyodide } = await import(msg.indexURL + "pyodide.mjs");
       const pyodide = await loadPyodide({ indexURL: msg.indexURL });
+      if (msg.packages && msg.packages.length > 0) {
+        await pyodide.loadPackage(msg.packages);
+        // loadPackage reports a failed download on the console instead of throwing, so check the result.
+        const missing = msg.packages.filter((name) => !(name in pyodide.loadedPackages));
+        if (missing.length > 0) {
+          throw new Error("Could not download " + missing.join(", ") + ". Check your connection and reload the page.");
+        }
+      }
       const response = await fetch(msg.runnerUrl);
       if (!response.ok) throw new Error("Could not load the Python runner (" + response.status + ")");
       runner = self.LearnRunner.create(pyodide, await response.text());

@@ -14,6 +14,7 @@ export interface LessonInfo {
   minutes: number;
   concepts: string[];
   localOnly: boolean;
+  packages: string[];
   hints: string[];
   href: string;
   entry: CollectionEntry<"lessons">;
@@ -24,6 +25,8 @@ export interface ModuleInfo {
   number: number;
   title: string;
   description: string;
+  /** An optional track: listed after the core path and never required. */
+  optional: boolean;
   lessons: LessonInfo[];
 }
 
@@ -41,6 +44,7 @@ export async function loadCourse(): Promise<ModuleInfo[]> {
         number: parseInt(moduleSlug.split("-")[0], 10),
         title: meta.title,
         description: meta.description,
+        optional: meta.optional === true,
         lessons: [],
       };
       modules.set(moduleSlug, mod);
@@ -53,6 +57,7 @@ export async function loadCourse(): Promise<ModuleInfo[]> {
       minutes: entry.data.minutes,
       concepts: entry.data.concepts,
       localOnly: entry.data.local_only,
+      packages: entry.data.packages,
       hints: entry.data.hints,
       href: url(`lessons/${moduleSlug}/${lessonSlug}/`),
       entry,
@@ -63,6 +68,11 @@ export async function loadCourse(): Promise<ModuleInfo[]> {
 
 export function flattenLessons(modules: ModuleInfo[]): LessonInfo[] {
   return modules.flatMap((m) => m.lessons);
+}
+
+/** Lessons on the main path (everything except the optional tracks). */
+export function coreLessons(modules: ModuleInfo[]): LessonInfo[] {
+  return flattenLessons(modules.filter((m) => !m.optional));
 }
 
 export interface Exercise {

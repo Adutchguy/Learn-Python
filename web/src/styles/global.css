@@ -353,11 +353,10 @@ main {
 }
 .editor .cm-editor {
   min-height: 14rem;
-  max-height: 28rem;
   font-size: 0.95rem;
 }
 .editor .cm-scroller {
-  overflow: auto;
+  overflow-x: hidden; /* lines wrap, so there is no sideways scrolling to reach by keyboard */
 }
 .stdin-box {
   margin: 0.6rem 0;
@@ -482,4 +481,132 @@ main {
 
 .review-missed {
   margin: 0.5rem 0 1rem;
+}
+
+/* ---- fast track for programmers ---- */
+.fast-track .ft-row {
+  border: 1px solid var(--border, #d0d7de);
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+.fast-track .ft-row h3 {
+  margin-top: 0;
+}
+.fast-track .ft-code {
+  margin: 0.5rem 0;
+}
+.fast-track .ft-output {
+  margin: 0.25rem 0 0;
+}
+.fast-track .ft-result {
+  margin-top: 0.25rem;
+}
+.fast-track .ft-links a {
+  margin-left: 0.5rem;
+}
+.fast-track .ft-skip-list {
+  columns: 2 18rem;
+}
+
+/* ---- optional tracks ---- */
+.module.track { border-left: 3px solid var(--accent, #2563eb); padding-left: 1rem; }
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.05rem 0.5rem;
+  border: 1px solid currentColor;
+  border-radius: 999px;
+  margin-left: 0.5rem;
+  white-space: nowrap;
+}
+
+/* ---- Accessibility ---- */
+main:focus {
+  outline: none; /* main is only focused programmatically, by the skip link */
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+@media (forced-colors: active) {
+  .button,
+  .badge,
+  .banner,
+  .notice {
+    border: 1px solid CanvasText;
+  }
+  .results li.pass::before,
+  .results li.fail::before {
+    forced-color-adjust: none;
+  }
+}
+
+/* ---- Small screens and touch ---- */
+@media (max-width: 640px) {
+  .site-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+  .site-header nav {
+    flex-wrap: wrap;
+    gap: 0 1rem;
+  }
+  main,
+  .site-header,
+  .site-footer {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  .module {
+    padding: 0.75rem 0.9rem;
+  }
+  .lesson-list li {
+    flex-wrap: wrap;
+  }
+  .lesson-nav {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+  .buttons .button {
+    flex: 1 1 8rem;
+    text-align: center;
+  }
+  .prose table {
+    display: block;
+    overflow-x: auto;
+  }
+  .editor .cm-editor {
+    font-size: 1rem; /* 16px stops iOS zooming the page when the editor is focused */
+  }
+  .stdin-box textarea {
+    font-size: 1rem;
+  }
+}
+/* Comfortable tap targets on touch screens (WCAG 2.5.8 asks for at least 24px; we aim for 44px). */
+@media (pointer: coarse) {
+  .site-header nav a,
+  .lesson-list a,
+  .lesson-nav a,
+  .breadcrumb a,
+  summary {
+    display: inline-block;
+    min-height: 44px;
+    line-height: 44px;
+    padding: 0 0.25rem;
+  }
+  .lesson-list li {
+    padding: 0;
+    align-items: center;
+  }
+  .button {
+    min-height: 44px;
+  }
 }

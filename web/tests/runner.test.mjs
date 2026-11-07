@@ -25,8 +25,13 @@ function listLessons() {
       const read = (f) => fs.readFileSync(path.join(dir, f), "utf8");
       // local_only lessons need real pytest features/OS access and are not run in the browser.
       if (/^local_only:\s*true\s*$/m.test(read("lesson.md"))) continue;
+      const packages = (read("lesson.md").match(/^packages:\s*\[(.*)\]\s*$/m)?.[1] ?? "")
+        .split(",")
+        .map((p) => p.trim().replace(/^["']|["']$/g, ""))
+        .filter(Boolean);
       lessons.push({
         id: `${mod}/${lesson}`,
+        packages,
         starter: read("starter.py"),
         solution: read("solution.py"),
         tests: read("test_exercise.py"),
@@ -39,6 +44,9 @@ function listLessons() {
 let runner;
 before(async () => {
   const pyodide = await loadPyodide();
+  // Lessons in the optional data track declare the packages they need (numpy, pandas ...).
+  const needed = [...new Set(lessons.flatMap((l) => l.packages))];
+  if (needed.length > 0) await pyodide.loadPackage(needed);
   runner = globalThis.LearnRunner.create(pyodide, runnerSource);
 });
 

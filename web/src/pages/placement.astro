@@ -1,10 +1,10 @@
 ---
 import Base from "../layouts/Base.astro";
-import { loadCourse, flattenLessons, loadPlacementQuestions } from "../lib/course";
+import { loadCourse, coreLessons, loadPlacementQuestions } from "../lib/course";
 import { url } from "../lib/paths";
 
 const modules = await loadCourse();
-const lessons = flattenLessons(modules);
+const lessons = coreLessons(modules); // the placement test never skips optional-track lessons
 const questions = loadPlacementQuestions();
 
 const data = {

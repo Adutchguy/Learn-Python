@@ -23,3 +23,6 @@ workspace/
 # Local-track progress written by `python -m learn`
 .learn-progress.json
 .learn-progress.json.tmp
+
+# Claude output files (staging folder, not part of the project)
+Claude outputs/

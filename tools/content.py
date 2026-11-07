@@ -32,6 +32,9 @@ NON_COURSE_DIRS = {"placement", "review", "fast-track"}
 SLUG_RE = re.compile(r"^\d{2}-[a-z0-9]+(?:-[a-z0-9]+)*$")
 REQUIRED_HEADINGS = ("## Your turn", "## Recap")
 HINT_COUNT = 3
+# Third-party packages a lesson may declare in its `packages` frontmatter. Each is available in
+# Pyodide (the browser track) and installed locally with `pip install -r requirements-tracks.txt`.
+ALLOWED_PACKAGES = {"numpy", "pandas", "matplotlib"}
 
 
 @dataclass
@@ -40,6 +43,7 @@ class Module:
     slug: str
     title: str
     description: str
+    optional: bool = False  # an optional track: not part of the core path
 
 
 @dataclass
@@ -99,6 +103,11 @@ def load_all(content_dir: Path = CONTENT) -> tuple[list[Lesson], list[str]]:
         except (ValueError, KeyError) as exc:
             problems.append(f"{rel}/module.json: needs 'title' and 'description' ({exc})")
             continue
+        if "optional" in raw:
+            if not isinstance(raw["optional"], bool):
+                problems.append(f"{rel}/module.json: 'optional' must be true or false")
+            else:
+                module.optional = raw["optional"]
 
         for lesson_dir in sorted(p for p in module_dir.iterdir() if p.is_dir()):
             lrel = lesson_dir.relative_to(content_dir)
@@ -141,6 +150,7 @@ def load_all(content_dir: Path = CONTENT) -> tuple[list[Lesson], list[str]]:
 def validate(lessons: list[Lesson]) -> list[str]:
     problems: list[str] = []
     order = {lesson.id: i for i, lesson in enumerate(lessons)}
+    by_id = {lesson.id: lesson for lesson in lessons}
 
     for lesson in lessons:
         where = lesson.id
@@ -186,9 +196,31 @@ def validate(lessons: list[Lesson]) -> list[str]:
         if "broken_starter" in m and not isinstance(m["broken_starter"], bool):
             problems.append(f"{where}: 'broken_starter' must be true or false")
 
-        unknown = set(m) - {"title", "minutes", "prereqs", "concepts", "local_only", "hints", "broken_starter"}
+        if "packages" in m:
+            pk = m["packages"]
+            if not isinstance(pk, list) or not pk or not all(isinstance(x, str) for x in pk):
+                problems.append(f"{where}: 'packages' must be a non-empty list of package names")
+            else:
+                for name in pk:
+                    if name not in ALLOWED_PACKAGES:
+                        problems.append(
+                            f"{where}: package {name!r} is not allowed (allowed: {', '.join(sorted(ALLOWED_PACKAGES))})"
+                        )
+
+        if not lesson.module.optional:
+            for pre in prereqs if isinstance(prereqs, list) else []:
+                pre_lesson = by_id.get(pre)
+                if pre_lesson is not None and pre_lesson.module.optional:
+                    problems.append(f"{where}: a core lesson cannot require the optional lesson {pre!r}")
+
+        unknown = set(m) - {
+            "title", "minutes", "prereqs", "concepts", "local_only", "hints", "broken_starter", "packages",
+        }
         if unknown:
             problems.append(f"{where}: unknown frontmatter key(s): {', '.join(sorted(unknown))}")
+
+        if "SCAFFOLD" in lesson.body:
+            problems.append(f"{where}: lesson.md still has the SCAFFOLD placeholder from tools/new_lesson.py; finish the lesson and delete that line")
 
         for heading in REQUIRED_HEADINGS:
             if not re.search(rf"^{re.escape(heading)}\s*$", lesson.body, re.MULTILINE):
@@ -244,9 +276,17 @@ def expected_exercise_files(lessons: list[Lesson]) -> dict[Path, str]:
 def render_lesson_markdown(lesson: Lesson) -> str:
     """Plain-Markdown version of a lesson for people working in the repo."""
     m = lesson.meta
+    module_label = f"Optional track: {lesson.module.title}" if lesson.module.optional else lesson.module.title
     parts = [
         f"# {m['title']}\n",
-        f"*{lesson.module.title} · about {m['minutes']} minutes*\n",
+        f"*{module_label} · about {m['minutes']} minutes*\n",
+    ]
+    if m.get("packages"):
+        parts.append(
+            f"> This lesson uses {', '.join(m['packages'])}. "
+            "Install them once with `pip install -r requirements-tracks.txt`.\n"
+        )
+    parts += [
         lesson.body.strip() + "\n",
         "## How to check your work\n",
         "Edit `exercise.py` in this folder, then run this from the repository root:\n",

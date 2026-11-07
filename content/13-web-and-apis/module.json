@@ -1,0 +1,5 @@
+{
+  "title": "Web and APIs",
+  "description": "Understand how the web talks (HTTP), read data from JSON APIs, call web services, and build a small API of your own. Standard library only.",
+  "optional": true
+}

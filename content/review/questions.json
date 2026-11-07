@@ -1114,6 +1114,358 @@
       ],
       "answer": 2,
       "explanation": "tomllib turns TOML into ordinary dictionaries and lists: dependencies is a list whose first item is rich, and name is the text demo."
+    },
+    {
+      "id": "01-numpy-arrays-1",
+      "lesson": "11-data-analysis/01-numpy-arrays",
+      "prompt": "What does this program print?",
+      "code": "import numpy as np\n\na = np.array([1, 2, 3])\nprint(a * 2)",
+      "options": [
+        "[1 2 3 1 2 3]",
+        "[1, 2, 3, 1, 2, 3]",
+        "[2, 4, 6]",
+        "[2 4 6]"
+      ],
+      "answer": 3,
+      "explanation": "Arithmetic on a NumPy array applies to every element, so the numbers double. (A plain list times 2 would repeat the list.)"
+    },
+    {
+      "id": "01-numpy-arrays-2",
+      "lesson": "11-data-analysis/01-numpy-arrays",
+      "prompt": "What does this program print?",
+      "code": "import numpy as np\n\ngrid = np.array([[1, 2], [3, 4]])\nprint(grid.mean(axis=0))",
+      "options": [
+        "[2. 3.]",
+        "[1.5 3.5]",
+        "[2.5]",
+        "[2 3]"
+      ],
+      "answer": 0,
+      "explanation": "axis=0 runs down the columns, so you get one average per column: (1 + 3) / 2 and (2 + 4) / 2."
+    },
+    {
+      "id": "02-pandas-dataframes-1",
+      "lesson": "11-data-analysis/02-pandas-dataframes",
+      "prompt": "What does this program print?",
+      "code": "import pandas as pd\n\ndf = pd.DataFrame({\"a\": [3, 9, 5]})\nprint(df[\"a\"].idxmax())",
+      "options": [
+        "9",
+        "1",
+        "0",
+        "2"
+      ],
+      "answer": 1,
+      "explanation": "idxmax returns the row label of the biggest value, not the value itself. The 9 sits in row 1."
+    },
+    {
+      "id": "02-pandas-dataframes-2",
+      "lesson": "11-data-analysis/02-pandas-dataframes",
+      "prompt": "This program stops with an error. Which kind?",
+      "code": "import pandas as pd\n\ndf = pd.DataFrame({\"a\": [1]})\nprint(df[\"b\"])",
+      "kind": "error",
+      "options": [
+        "IndexError",
+        "AttributeError",
+        "KeyError",
+        "ValueError"
+      ],
+      "answer": 2,
+      "explanation": "Asking a DataFrame for a column it does not have raises KeyError, just like a missing dictionary key."
+    },
+    {
+      "id": "03-selecting-and-filtering-1",
+      "lesson": "11-data-analysis/03-selecting-and-filtering",
+      "prompt": "What does this program print?",
+      "code": "import pandas as pd\n\npeople = pd.DataFrame({\"age\": [10, 20, 30]})\nprint(len(people[people[\"age\"] > 15]))",
+      "options": [
+        "3",
+        "1",
+        "0",
+        "2"
+      ],
+      "answer": 3,
+      "explanation": "The mask picks the rows where age is above 15: the 20 and the 30, so two rows remain."
+    },
+    {
+      "id": "03-selecting-and-filtering-2",
+      "lesson": "11-data-analysis/03-selecting-and-filtering",
+      "prompt": "What does this program print?",
+      "code": "import pandas as pd\n\ndf = pd.DataFrame({\"a\": [1, 5], \"b\": [5, 1]})\nprint(df[(df[\"a\"] > 2) | (df[\"b\"] > 2)].shape[0])",
+      "options": [
+        "2",
+        "0",
+        "1",
+        "It causes an error"
+      ],
+      "answer": 0,
+      "explanation": "With | (or) a row is kept when either condition holds. Row 0 has b = 5 and row 1 has a = 5, so both rows stay."
+    },
+    {
+      "id": "04-grouping-and-summarising-1",
+      "lesson": "11-data-analysis/04-grouping-and-summarising",
+      "prompt": "What does this program print?",
+      "code": "import pandas as pd\n\ndf = pd.DataFrame({\"k\": [\"x\", \"y\", \"x\"], \"v\": [1, 2, 3]})\nprint(df.groupby(\"k\")[\"v\"].sum()[\"x\"])",
+      "options": [
+        "1",
+        "4",
+        "3",
+        "6"
+      ],
+      "answer": 1,
+      "explanation": "groupby splits the rows by k and sum adds up v inside each group. The two x rows hold 1 and 3, so the total is 4."
+    },
+    {
+      "id": "04-grouping-and-summarising-2",
+      "lesson": "11-data-analysis/04-grouping-and-summarising",
+      "prompt": "What does this program print?",
+      "code": "import pandas as pd\n\ndf = pd.DataFrame({\"k\": [\"x\", \"y\", \"x\"], \"v\": [1, 2, 3]})\nprint(df[\"k\"].value_counts().idxmax())",
+      "options": [
+        "y",
+        "2",
+        "x",
+        "k"
+      ],
+      "answer": 2,
+      "explanation": "value_counts counts how often each value occurs, biggest first. x appears twice and y once."
+    },
+    {
+      "id": "05-cleaning-messy-data-1",
+      "lesson": "11-data-analysis/05-cleaning-messy-data",
+      "prompt": "What does this program print?",
+      "code": "import pandas as pd\n\ns = pd.Series([1.0, None, 3.0])\nprint(s.mean(), s.isna().sum())",
+      "options": [
+        "1.3333333333333333 1",
+        "2.0 0",
+        "nan 1",
+        "2.0 1"
+      ],
+      "answer": 3,
+      "explanation": "Missing values (NaN) are skipped by mean(), so the mean of 1.0 and 3.0 is 2.0. isna() marks one missing value."
+    },
+    {
+      "id": "05-cleaning-messy-data-2",
+      "lesson": "11-data-analysis/05-cleaning-messy-data",
+      "prompt": "What does this program print?",
+      "code": "import pandas as pd\n\nprint(pd.Series([\"  Ada \"]).str.strip().str.upper()[0])",
+      "options": [
+        "ADA",
+        "  ADA ",
+        "Ada",
+        "ada"
+      ],
+      "answer": 0,
+      "explanation": "The .str accessor applies string methods to each item: strip removes the spaces, then upper capitalises every letter."
+    },
+    {
+      "id": "07-charts-with-matplotlib-1",
+      "lesson": "11-data-analysis/07-charts-with-matplotlib",
+      "prompt": "What does this program print?",
+      "code": "import matplotlib\n\nmatplotlib.use(\"Agg\")\nimport matplotlib.pyplot as plt\n\nfig, ax = plt.subplots()\nax.set_title(\"Hi\")\nprint(ax.get_title(), len(ax.lines))",
+      "options": [
+        "Hi 1",
+        "Hi 0",
+        "None 0",
+        "Hi"
+      ],
+      "answer": 1,
+      "explanation": "set_title labels the chart, and nothing has been plotted yet, so the Axes holds no lines."
+    },
+    {
+      "id": "01-command-line-arguments-1",
+      "lesson": "12-automation/01-command-line-arguments",
+      "prompt": "What does this program print?",
+      "code": "import argparse\n\np = argparse.ArgumentParser()\np.add_argument(\"-n\", type=int, default=5)\np.add_argument(\"-v\", action=\"store_true\")\nargs = p.parse_args([\"-v\"])\nprint(args.n, args.v)",
+      "options": [
+        "None True",
+        "5 False",
+        "5 True",
+        "True 5"
+      ],
+      "answer": 2,
+      "explanation": "-n was not given, so it keeps its default of 5. A store_true flag becomes True when it is present."
+    },
+    {
+      "id": "02-files-and-folders-1",
+      "lesson": "12-automation/02-files-and-folders",
+      "prompt": "What does this program print?",
+      "code": "from pathlib import Path\n\np = Path(\"photos/Cat.JPG\")\nprint(p.suffix.lower(), p.parent.name)",
+      "options": [
+        ".JPG photos",
+        "jpg photos",
+        ".jpg Cat",
+        ".jpg photos"
+      ],
+      "answer": 3,
+      "explanation": "suffix is the ending including the dot (.JPG), lower() makes it .jpg, and parent is the folder photos."
+    },
+    {
+      "id": "02-files-and-folders-2",
+      "lesson": "12-automation/02-files-and-folders",
+      "prompt": "What does this program print?",
+      "code": "import tempfile\nfrom pathlib import Path\n\nwith tempfile.TemporaryDirectory() as folder:\n    root = Path(folder)\n    (root / \"sub\").mkdir()\n    (root / \"a.txt\").write_text(\"hi\")\n    (root / \"sub\" / \"b.txt\").write_text(\"hello\")\n    print(len(list(root.glob(\"*.txt\"))), len(list(root.rglob(\"*.txt\"))))",
+      "options": [
+        "1 2",
+        "2 2",
+        "1 1",
+        "2 1"
+      ],
+      "answer": 0,
+      "explanation": "glob only looks directly inside the folder (one match). rglob searches the subfolders too (two matches)."
+    },
+    {
+      "id": "03-running-other-programs-1",
+      "lesson": "12-automation/03-running-other-programs",
+      "prompt": "What does this program print?",
+      "code": "import subprocess\nimport sys\n\nr = subprocess.run([sys.executable, \"-c\", \"print(6 * 7)\"], capture_output=True, text=True)\nprint(r.returncode, r.stdout.strip())",
+      "options": [
+        "42 0",
+        "0 42",
+        "0 6 * 7",
+        "None 42"
+      ],
+      "answer": 1,
+      "explanation": "The child program succeeded, so returncode is 0, and capture_output collected what it printed: 42."
+    },
+    {
+      "id": "03-running-other-programs-2",
+      "lesson": "12-automation/03-running-other-programs",
+      "prompt": "What does this program print?",
+      "code": "import subprocess\nimport sys\n\nr = subprocess.run([sys.executable, \"-c\", \"raise SystemExit(3)\"])\nprint(r.returncode)",
+      "options": [
+        "0",
+        "1",
+        "3",
+        "It raises CalledProcessError"
+      ],
+      "answer": 2,
+      "explanation": "run() reports the exit status in returncode and does not raise unless you pass check=True."
+    },
+    {
+      "id": "04-timing-retries-and-schedules-1",
+      "lesson": "12-automation/04-timing-retries-and-schedules",
+      "prompt": "What does this program print?",
+      "code": "from datetime import datetime, timedelta\n\nstart = datetime(2026, 1, 31, 23, 0)\nprint(start + timedelta(minutes=90))",
+      "options": [
+        "2026-01-31 24:30:00",
+        "2026-02-01 01:30:00",
+        "2026-01-31 23:90:00",
+        "2026-02-01 00:30:00"
+      ],
+      "answer": 3,
+      "explanation": "datetime arithmetic carries over minutes, hours and months for you: 23:00 plus 90 minutes is 00:30 on 1 February."
+    },
+    {
+      "id": "04-timing-retries-and-schedules-2",
+      "lesson": "12-automation/04-timing-retries-and-schedules",
+      "prompt": "What does this program print?",
+      "code": "delay = 1\nwaits = []\nfor attempt in range(3):\n    waits.append(delay)\n    delay *= 2\nprint(waits)",
+      "options": [
+        "[1, 2, 4]",
+        "[1, 2, 3]",
+        "[1, 1, 1]",
+        "[2, 4, 8]"
+      ],
+      "answer": 0,
+      "explanation": "Exponential backoff doubles the wait after every failure: 1, then 2, then 4 seconds."
+    },
+    {
+      "id": "01-how-http-works-1",
+      "lesson": "13-web-and-apis/01-how-http-works",
+      "prompt": "What does this program print?",
+      "code": "from urllib.parse import urlsplit, parse_qs\n\nparts = urlsplit(\"https://x.org/s?q=a&n=2&n=3\")\nprint(parts.path, parse_qs(parts.query)[\"n\"])",
+      "options": [
+        "/s 3",
+        "/s ['2', '3']",
+        "s ['2', '3']",
+        "/s ['3']"
+      ],
+      "answer": 1,
+      "explanation": "The path is /s. parse_qs always gives lists, and the repeated key n collects both values."
+    },
+    {
+      "id": "01-how-http-works-2",
+      "lesson": "13-web-and-apis/01-how-http-works",
+      "prompt": "What does this program print?",
+      "code": "from urllib.parse import urlencode\n\nprint(urlencode({\"q\": \"a b\", \"n\": 1}))",
+      "options": [
+        "q=a b&n=1",
+        "q=a%20b&n=1",
+        "q=a+b&n=1",
+        "?q=a+b&n=1"
+      ],
+      "answer": 2,
+      "explanation": "urlencode joins the pairs with & and escapes unsafe characters; a space becomes +."
+    },
+    {
+      "id": "01-how-http-works-3",
+      "lesson": "13-web-and-apis/01-how-http-works",
+      "prompt": "What does this program print?",
+      "code": "from http import HTTPStatus\n\nprint(HTTPStatus(404).phrase)",
+      "options": [
+        "Not Allowed",
+        "Page Missing",
+        "Bad Request",
+        "Not Found"
+      ],
+      "answer": 3,
+      "explanation": "404 is the standard code for a page or resource that does not exist: Not Found."
+    },
+    {
+      "id": "02-working-with-json-apis-1",
+      "lesson": "13-web-and-apis/02-working-with-json-apis",
+      "prompt": "This program stops with an error. Which kind?",
+      "code": "data = {\"stats\": None}\nprint(data.get(\"stats\", {}).get(\"wins\", 0))",
+      "kind": "error",
+      "options": [
+        "AttributeError",
+        "KeyError",
+        "TypeError",
+        "ValueError"
+      ],
+      "answer": 0,
+      "explanation": "The key exists, so .get returns its value, None, instead of the default {}. Then None has no .get method."
+    },
+    {
+      "id": "02-working-with-json-apis-2",
+      "lesson": "13-web-and-apis/02-working-with-json-apis",
+      "prompt": "What does this program print?",
+      "code": "pages = {1: (\"a\", 2), 2: (\"b\", None)}\nout, page = [], 1\nwhile page is not None:\n    item, page = pages[page]\n    out.append(item)\nprint(out)",
+      "options": [
+        "['a']",
+        "['a', 'b']",
+        "['b']",
+        "[1, 2]"
+      ],
+      "answer": 1,
+      "explanation": "Each response names the next page. The loop follows them from page 1 to page 2 and stops when the next page is None."
+    },
+    {
+      "id": "03-calling-a-web-service-1",
+      "lesson": "13-web-and-apis/03-calling-a-web-service",
+      "prompt": "What does this program print?",
+      "code": "import json\nimport urllib.request\n\nreq = urllib.request.Request(\"http://x.test/n\", data=json.dumps({\"a\": 1}).encode(), method=\"POST\")\nprint(req.get_method(), req.data)",
+      "options": [
+        "GET b'{\"a\": 1}'",
+        "POST {'a': 1}",
+        "POST b'{\"a\": 1}'",
+        "POST '{\"a\": 1}'"
+      ],
+      "answer": 2,
+      "explanation": "A request carries its body as bytes (b'...'), so the dictionary was turned into JSON text and then encoded. method=\"POST\" says how to send it."
+    },
+    {
+      "id": "03-calling-a-web-service-2",
+      "lesson": "13-web-and-apis/03-calling-a-web-service",
+      "prompt": "What does this program print?",
+      "code": "import urllib.error\n\ntry:\n    raise urllib.error.HTTPError(\"http://x\", 404, \"Not Found\", {}, None)\nexcept urllib.error.URLError as error:\n    print(type(error).__name__, error.code)",
+      "options": [
+        "URLError 404",
+        "HTTPError None",
+        "It causes an AttributeError",
+        "HTTPError 404"
+      ],
+      "answer": 3,
+      "explanation": "HTTPError is a kind of URLError, so the except clause catches it, and its .code holds the status. Catch HTTPError first if you want the status code."
     }
   ]
 }

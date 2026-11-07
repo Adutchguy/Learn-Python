@@ -2,7 +2,7 @@ import { EditorView, basicSetup } from "codemirror";
 import { keymap } from "@codemirror/view";
 import { indentWithTab } from "@codemirror/commands";
 import { python } from "@codemirror/lang-python";
-import { oneDark } from "@codemirror/theme-one-dark";
+import { accessibleDark } from "./editor-theme";
 import { PythonClient, StoppedError, type TestResult } from "./python-client";
 import { getLesson, updateLesson } from "./progress";
 
@@ -14,7 +14,7 @@ interface LessonData {
   hints: string[];
   localOnly: boolean;
   nextHref: string | null;
-  python: { workerUrl: string; indexURL: string; runnerUrl: string };
+  python: { workerUrl: string; indexURL: string; runnerUrl: string; packages: string[] };
 }
 
 const SOLUTION_UNLOCK_AFTER = 3; // failed checks
@@ -51,11 +51,12 @@ function init() {
     extensions: [
       basicSetup,
       python(),
+      EditorView.lineWrapping,
       keymap.of([
         { key: "Mod-Enter", run: () => (void runCode(), true) },
         indentWithTab,
       ]),
-      dark ? oneDark : [],
+      dark ? accessibleDark : [],
       EditorView.contentAttributes.of({ "aria-label": "Python code editor. Press Escape then Tab to leave the editor." }),
       EditorView.updateListener.of((update) => {
         if (!update.docChanged) return;
@@ -78,7 +79,9 @@ function init() {
     status.dataset.state = state;
     status.textContent =
       state === "loading"
-        ? "Loading Python… the first time takes a few seconds."
+        ? data.python.packages.length > 0
+          ? `Loading Python and ${data.python.packages.join(", ")}… the first time can take up to a minute.`
+          : "Loading Python… the first time takes a few seconds."
         : state === "ready"
           ? "Python is ready."
           : state === "busy"

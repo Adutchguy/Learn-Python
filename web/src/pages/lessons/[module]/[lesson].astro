@@ -7,15 +7,17 @@ import { url, REPO_URL } from "../../../lib/paths";
 export async function getStaticPaths() {
   const modules = await loadCourse();
   const lessons = flattenLessons(modules);
-  return lessons.map((lesson, i) => ({
-    params: { module: lesson.moduleSlug, lesson: lesson.lessonSlug },
-    props: {
-      lesson,
-      module: modules.find((m) => m.slug === lesson.moduleSlug)!,
-      previous: lessons[i - 1] ?? null,
-      next: lessons[i + 1] ?? null,
-    },
-  }));
+  const core = modules.filter((m) => !m.optional).flatMap((m) => m.lessons);
+  return lessons.map((lesson) => {
+    const mod = modules.find((m) => m.slug === lesson.moduleSlug)!;
+    // Previous/next stay inside the core path, or inside the optional track being studied.
+    const pool = mod.optional ? mod.lessons : core;
+    const i = pool.indexOf(lesson);
+    return {
+      params: { module: lesson.moduleSlug, lesson: lesson.lessonSlug },
+      props: { lesson, module: mod, previous: pool[i - 1] ?? null, next: pool[i + 1] ?? null },
+    };
+  });
 }
 
 const { lesson, module: mod, previous, next } = Astro.props;
@@ -31,6 +33,7 @@ const lessonData = {
   localOnly: lesson.localOnly,
   nextHref: next ? next.href : null,
   python: {
+    packages: lesson.packages,
     workerUrl: url("pyodide-worker.js"),
     indexURL: `https://cdn.jsdelivr.net/pyodide/v${pyodideVersion()}/full/`,
     runnerUrl: url("py/learn_runner.py"),
@@ -42,7 +45,8 @@ const lessonJson = JSON.stringify(lessonData).replace(/</g, "\\u003c");
 
 <Base title={`${lesson.title} · Learn Python`}>
   <nav class="breadcrumb" aria-label="Breadcrumb">
-    <a href={url()}>Course</a> <span aria-hidden="true">›</span> {mod.title}
+    <a href={url()}>Course</a> <span aria-hidden="true">›</span>
+    {mod.optional ? <span>Optional track: {mod.title}</span> : <span>{mod.title}</span>}
   </nav>
 
   <div class="lesson-layout">
@@ -54,7 +58,7 @@ const lessonJson = JSON.stringify(lessonData).replace(/</g, "\\u003c");
       </div>
       <nav class="lesson-nav" aria-label="Lesson navigation">
         {previous ? <a href={previous.href}>← {previous.title}</a> : <span />}
-        {next ? <a href={next.href}>{next.title} →</a> : <span />}
+        {next ? <a href={next.href}>{next.title} →</a> : <a href={url(mod.optional ? "" : "#tracks")}>{mod.optional ? "Back to the course" : "You finished the core path. See the optional tracks →"}</a>}
       </nav>
     </article>
 
@@ -71,6 +75,12 @@ const lessonJson = JSON.stringify(lessonData).replace(/</g, "\\u003c");
         ) : (
           <>
             <h2 class="sr-only">Practice</h2>
+            {lesson.packages.length > 0 && (
+              <p class="muted small">
+                This lesson uses {lesson.packages.join(", ")}. The first time, your browser downloads them (a few
+                megabytes); after that they are saved on this device.
+              </p>
+            )}
             <div id="editor" class="editor"></div>
             <p class="muted small">Tip: press Ctrl/⌘ + Enter to run. Press Esc, then Tab, to move out of the editor.</p>
 

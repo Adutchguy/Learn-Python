@@ -17,6 +17,8 @@ const lessons = defineCollection({
     concepts: z.array(z.string()).min(1),
     local_only: z.boolean(),
     hints: z.array(z.string()).length(3),
+    packages: z.array(z.string()).default([]),
+    broken_starter: z.boolean().optional(),
   }),
 });
 

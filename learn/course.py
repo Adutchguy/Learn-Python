@@ -13,6 +13,7 @@ from pathlib import Path
 
 NUMBERED = re.compile(r"^\d{2}-")
 HEADER_LINE = re.compile(r"^\*(?P<module>.+?)\s+\S\s+about (?P<minutes>\d+) minutes?\*\s*$")
+TRACK_PREFIX = "Optional track: "
 HINT = re.compile(r"<details><summary>Hint \d+</summary>\n\n(.*?)\n\n</details>", re.DOTALL)
 
 
@@ -24,6 +25,7 @@ class Lesson:
     minutes: int
     folder: Path
     hints: tuple[str, ...]
+    optional: bool = False  # belongs to an optional track, not the core path
 
     @property
     def lesson_file(self) -> Path:
@@ -51,7 +53,10 @@ def _read_lesson(folder: Path, lesson_id: str) -> Lesson:
             module, minutes = match.group("module"), int(match.group("minutes"))
             break
     hints = tuple(h.strip() for h in HINT.findall(text.replace("\r\n", "\n")))
-    return Lesson(lesson_id, module, title, minutes, folder, hints)
+    optional = module.startswith(TRACK_PREFIX)
+    if optional:
+        module = module[len(TRACK_PREFIX) :]
+    return Lesson(lesson_id, module, title, minutes, folder, hints, optional)
 
 
 def load_course(root: Path | None = None) -> list[Lesson]:
@@ -92,3 +97,37 @@ def resolve(course: list[Lesson], query: str) -> Lesson:
     shown = "\n".join(f"  {m.id}" for m in matches[:8])
     more = f"\n  ... and {len(matches) - 8} more" if len(matches) > 8 else ""
     raise LookupError(f"{query!r} matches several lessons; be more specific:\n{shown}{more}")
+
+
+def core_lessons(course: list[Lesson]) -> list[Lesson]:
+    """The lessons on the main path (everything except the optional tracks)."""
+    return [lesson for lesson in course if not lesson.optional]
+
+
+def tracks(course: list[Lesson]) -> dict[str, list[Lesson]]:
+    """Optional tracks by module folder name, in course order."""
+    found: dict[str, list[Lesson]] = {}
+    for lesson in course:
+        if lesson.optional:
+            found.setdefault(lesson.id.split("/")[0], []).append(lesson)
+    return found
+
+
+def resolve_track(course: list[Lesson], query: str) -> str:
+    """Find an optional track from its folder name or a word from it ('data', 'web', 'automation').
+
+    Raises LookupError with a message fit to show a learner.
+    """
+    names = list(tracks(course))
+    query = query.strip().lower()
+    if query in names:
+        return query
+    matches = [name for name in names if query and query in name]
+    if len(matches) == 1:
+        return matches[0]
+    if not names:
+        raise LookupError("This copy of the course has no optional tracks.")
+    options = ", ".join(n.split("-", 1)[1] for n in names)
+    if not matches:
+        raise LookupError(f"No track matches {query!r}. The tracks are: {options}")
+    raise LookupError(f"{query!r} matches several tracks ({options}); be more specific.")

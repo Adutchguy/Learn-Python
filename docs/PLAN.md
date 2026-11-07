@@ -2,7 +2,7 @@
 
 **Goal:** a free, open-source way for anyone to fully learn Python as effectively and quickly as possible, with no cost and no account.
 
-**Status:** M0 (scaffold), M1 (engine), M2 (modules 0-2, placement test v1, first project), M3 (modules 3-5 and the spaced-review queue), M4 (modules 6-8, the `learn` CLI, two more projects) and M5 (modules 9-10, the capstone and the programmers' fast-track) are built: 72 lessons. Next: M6 (optional tracks, accessibility, mobile, offline, contributor onboarding).
+**Status:** M0 (scaffold), M1 (engine), M2 (modules 0-2, placement test v1, first project), M3 (modules 3-5 and the spaced-review queue), M4 (modules 6-8, the `learn` CLI, two more projects), M5 (modules 9-10, the capstone and the programmers' fast-track) and M6 (three optional tracks, accessibility pass, mobile layout, offline PWA, contributor onboarding) are built: 72 core lessons plus 16 in optional tracks. Next: the human review pass, a first public release, and whatever learners ask for.
 
 **Decisions so far (from kickoff):**
 - Delivery: **both** a no-install browser app **and** a clone-and-run repo track
@@ -74,7 +74,7 @@ Learn-Python/
 
 ## 3. Placement path
 
-> **Built (M2, v1):** a "what does this print?" quiz at `/placement/` with 49 multiple-choice questions in course order (47 on published lessons, 2 beyond them: `argparse` flags and thread pools). It stops after two misses, recommends the lesson of the first miss, and can mark earlier lessons as skipped (`placedOut` in progress; the orientation lesson is never skipped). Every answer key is verified by running the code in CI (`tools/placement.py`). Still to do from the list below: the landing choice, tiny coding tasks, per-module checkpoints, and the programmers' fast-track.
+> **Built (M2, v1):** a "what does this print?" quiz at `/placement/` with 49 multiple-choice questions in course order (47 on published lessons, 2 beyond them: `argparse` flags and thread pools). It stops after two misses, recommends the lesson of the first miss, and can mark earlier lessons as skipped (`placedOut` in progress; the orientation lesson is never skipped). Every answer key is verified by running the code in CI (`tools/placement.py`). Still to do from the list below: the landing choice, tiny coding tasks, and per-module checkpoints. The programmers' fast-track was added in M5 (item 4).
 
 1. **Landing choice:** "I'm new to programming" / "I know another language" / "Test me".
 2. **Diagnostic (~15–20 min, adaptive):** short multiple-choice, "what does this print?", and 3–4 tiny coding tasks. Questions are tagged by concept.
@@ -84,7 +84,7 @@ Learn-Python/
 
 > **Review queue built (M3, extended in M4):** `content/review/questions.json` (79 questions now) holds one or two "what does this print?" questions per lesson (projects and the orientation lesson are exempt; CI checks the coverage and runs every answer key). `/review/` asks the questions from lessons the learner really completed (not ones skipped by the placement test) on a Leitner schedule: a right answer moves a question up a box (gaps of 1, 3, 7, 14, then 30 days), a wrong or "not sure" answer sends it back to box 0 (tomorrow). Sessions are capped at 10 questions. The schedule lives in the same browser progress as everything else and is included in the backup file. Still to do from principle 5: interleaved module quizzes, and a typed-code review task.
 
-## 4. Curriculum (core ≈ 66 lessons + 4 projects)
+## 4. Curriculum (core: 72 lessons, including 5 projects; plus 16 in optional tracks)
 
 | # | Module | Key topics | Project |
 |---|---|---|---|
@@ -100,10 +100,12 @@ Learn-Python/
 | 9 | Pythonic Python (7, one local-only) | Iterators, generators, comprehension patterns, decorators, `functools`, type hints, async intro | — |
 | 10 | Testing & Quality (6, three local-only) | `pytest` (write tests that catch mutants), fixtures & parametrize, readable code & linting, Git basics, packaging, then the `wordkit` capstone | Capstone: build + test + publish a mini-package (built) |
 
-**Optional tracks (after Module 6 or 8):**
-- **Data analysis:** NumPy, pandas, Matplotlib, cleaning data, a small analysis project (browser-capable).
-- **Web & APIs:** HTTP concepts, `requests`, JSON APIs, a small FastAPI service (mostly local-only).
-- **Automation & scripting:** files/folders, `argparse`, `subprocess`, scheduling, small tools (mostly local-only).
+**Optional tracks (built; not part of the core path, placement test or fast track):**
+- **Module 11, Data Analysis (7, one local-only):** NumPy arrays, pandas DataFrames, selecting and filtering, grouping and summarising, cleaning messy data, a sales-analysis project, then Matplotlib (local-only, because a saved chart cannot be seen in the browser runner). NumPy and pandas run in the browser through Pyodide.
+- **Module 12, Automation and Scripting (5, one local-only):** `argparse`, files and folders in bulk, `subprocess` (local-only), timing, retries and scheduling, and a file-organiser project.
+- **Module 13, Web and APIs (4, two local-only):** how HTTP works, JSON APIs, calling a web service with `urllib` (local-only), and a tiny JSON API built on the standard library's `http.server` (local-only).
+
+Deviation from the original idea: the web track uses the standard library (`urllib`, `http.server`) instead of `requests` and FastAPI, so it needs no extra installs and its tests can run a real server on `127.0.0.1` without touching the internet.
 
 ## 5. Lesson template (every lesson follows it)
 
@@ -124,7 +126,7 @@ Learn-Python/
 | **M3 Data & functions** | Modules 3–5 + review queue (spaced retrieval) |
 | **M4 Robust code** (built) | Modules 6–8 + `learn` CLI + projects 3–4 |
 | **M5 Advanced + capstone** (built) | Modules 9–10 + capstone + programmers' fast-track |
-| **M6 Tracks & polish** | Optional tracks, accessibility pass, mobile layout, offline PWA, contributor onboarding |
+| **M6 Tracks & polish** (built) | Optional tracks, accessibility pass, mobile layout, offline PWA, contributor onboarding |
 
 Suggested first build session: **M0 + M1** (working end-to-end vertical slice with 3 real lessons), so we can feel the learning experience before writing the remaining content.
 
@@ -143,6 +145,14 @@ Findings from building M1:
 - Current Pyodide releases do not support classic web workers, so the browser worker is a module worker that loads `pyodide.mjs`.
 - A compile detail that mattered: the browser runner must compile learner and test code with `dont_inherit=True`, otherwise the runner's own `from __future__ import annotations` silently turns learners' type hints into strings.
 - Lesson tests use real pytest locally and a small compatible runner in the browser (`capsys`, `monkeypatch` incl. `chdir`, `tmp_path`, `pytest.raises/approx/fail`); this subset is documented in `docs/CONTENT-STYLE-GUIDE.md`.
+
+Findings from building M6:
+
+- Optional tracks reuse the module and lesson machinery with one flag (`"optional": true` in `module.json`). Core lessons may not require track lessons; the placement test and fast track only ever see core lessons (a first draft let a perfect placement score "skip" track lessons, caught by the end-to-end test).
+- Lessons declare third-party packages in `packages:` frontmatter (`numpy`, `pandas`, `matplotlib`). The browser worker preloads them with `pyodide.loadPackage` and now checks that they really loaded, because Pyodide only logs a failed download.
+- An automated axe-core audit of the built site found real problems the eye missed: low-contrast code colours (fixed with high-contrast Shiki themes and an own accessible dark editor theme) and a scrollable editor region that keyboards could not reach (the editor now wraps lines).
+- The service worker needs `ignoreVary` when matching its cache, because module scripts are requested with an `Origin` header and the static host answers `Vary: Origin`.
+- Offline support is two layers: the site is precached by the build (an Astro integration writes the file list), and Python itself is cached from the CDN either on first use or all at once by the "Download for offline" button.
 
 ## 8. Risks & mitigations
 

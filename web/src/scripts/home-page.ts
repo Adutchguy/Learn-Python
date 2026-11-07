@@ -27,8 +27,10 @@ function refresh() {
   const progress = loadProgress();
   let done = 0;
   let skipped = 0;
+  let trackDone = 0;
   let firstTodo: HTMLElement | undefined;
   for (const el of lessonEls) {
+    const isTrack = el.dataset.optional === "true";
     const entry = progress.lessons[el.dataset.lessonId!];
     const isDone = entry?.done === true;
     const wasSkipped = isDone && entry?.placedOut === true;
@@ -39,13 +41,19 @@ function refresh() {
       : isDone
         ? " (completed)"
         : "";
+    if (isTrack) {
+      if (isDone) trackDone++;
+      continue; // optional lessons never count towards the core path or "Continue"
+    }
     if (isDone) done++;
     if (wasSkipped) skipped++;
     else if (!firstTodo) firstTodo = el;
   }
+  const coreTotal = lessonEls.filter((el) => el.dataset.optional !== "true").length;
   if (summary) {
     const extra = skipped > 0 ? ` (${skipped} skipped)` : "";
-    summary.textContent = done === 0 ? "" : `${done} of ${lessonEls.length} lessons complete${extra}`;
+    const tracks = trackDone > 0 ? `, plus ${trackDone} optional track lesson${trackDone === 1 ? "" : "s"}` : "";
+    summary.textContent = done === 0 && trackDone === 0 ? "" : `${done} of ${coreTotal} lessons complete${extra}${tracks}`;
   }
   if (startLink) {
     const next = firstTodo?.querySelector<HTMLAnchorElement>("a");

@@ -6,6 +6,7 @@ export interface PythonConfig {
   workerUrl: string;
   indexURL: string; // folder of the Pyodide distribution, ending with "/"
   runnerUrl: string; // URL of py/learn_runner.py
+  packages?: string[]; // Pyodide packages to load at start-up (for example "numpy", "pandas")
 }
 
 export interface RunResult {
@@ -35,6 +36,8 @@ interface Pending {
 }
 
 const LOAD_TIMEOUT_MS = 90_000;
+// Downloading packages such as pandas can take much longer on a slow connection.
+const LOAD_TIMEOUT_WITH_PACKAGES_MS = 240_000;
 
 export class PythonClient {
   onStatus: (status: Status, detail?: string) => void = () => {};
@@ -75,7 +78,7 @@ export class PythonClient {
     this.ready = new Promise<void>((resolve, reject) => {
       const timer = setTimeout(
         () => fail(new Error("Python took too long to load. Check your connection and reload the page.")),
-        LOAD_TIMEOUT_MS,
+        this.config.packages?.length ? LOAD_TIMEOUT_WITH_PACKAGES_MS : LOAD_TIMEOUT_MS,
       );
       const fail = (error: Error) => {
         clearTimeout(timer);
@@ -98,7 +101,12 @@ export class PythonClient {
       worker.addEventListener("error", (event) => {
         fail(new Error(event.message || "The Python worker failed to start."));
       });
-      worker.postMessage({ type: "init", indexURL: this.config.indexURL, runnerUrl: this.config.runnerUrl });
+      worker.postMessage({
+        type: "init",
+        indexURL: this.config.indexURL,
+        runnerUrl: this.config.runnerUrl,
+        packages: this.config.packages ?? [],
+      });
     });
     this.ready.catch(() => {}); // errors are reported through onStatus and request()
     return this.ready;

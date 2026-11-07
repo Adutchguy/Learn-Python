@@ -1,10 +1,10 @@
 ---
 import Base from "../layouts/Base.astro";
-import { loadCourse, flattenLessons, loadFastTrack } from "../lib/course";
+import { loadCourse, coreLessons, loadFastTrack } from "../lib/course";
 import { url } from "../lib/paths";
 
 const modules = await loadCourse();
-const lessons = flattenLessons(modules);
+const lessons = coreLessons(modules); // optional tracks are not part of the fast track
 const byId = new Map(lessons.map((l) => [l.id, l]));
 const track = loadFastTrack();
 

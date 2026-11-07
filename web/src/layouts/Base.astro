@@ -17,6 +17,9 @@ const { title, description = "Learn Python for free with short, interactive less
     <meta name="description" content={description} />
     <meta name="color-scheme" content="light dark" />
     <link rel="icon" type="image/svg+xml" href={url("favicon.svg")} />
+    <link rel="manifest" href={url("manifest.webmanifest")} />
+    <link rel="apple-touch-icon" href={url("apple-touch-icon.png")} />
+    <meta name="theme-color" content="#306998" />
     <title>{title}</title>
   </head>
   <body>
@@ -31,7 +34,7 @@ const { title, description = "Learn Python for free with short, interactive less
         <a href={REPO_URL}>GitHub</a>
       </nav>
     </header>
-    <main id="main">
+    <main id="main" tabindex="-1">
       <slot />
     </main>
     <footer class="site-footer">
@@ -41,5 +44,8 @@ const { title, description = "Learn Python for free with short, interactive less
         stays in this browser.
       </p>
     </footer>
+  <script>
+      import "../scripts/offline";
+    </script>
   </body>
 </html>

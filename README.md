@@ -7,7 +7,21 @@ A free, open-source way to learn Python quickly and thoroughly, with **no sign-u
 
 Both tracks come from the same lesson files, so they always match.
 
-> **Status:** early but usable. 72 lessons are written, from Start Here through Pythonic Python (iterators, generators, decorators, `functools`, type hints, async) and Testing & Quality (pytest, fixtures, linting, Git, packaging), with five projects: a number-guessing game, a quiz engine, an expense tracker, a bank system and a capstone where you build, test and publish a small package. There is a placement test that suggests where to start, a [fast track](web/src/pages/fast-track.astro) for people who already code in another language (it skips the lessons you do not need), and a spaced-review queue that brings finished lessons back at growing gaps. Optional tracks and polish are next; see [docs/PLAN.md](docs/PLAN.md) for the full roadmap.
+> **Status:** usable and feature-complete for the first release. 72 core lessons take you from Start Here through Pythonic Python (iterators, generators, decorators, `functools`, type hints, async) and Testing & Quality (pytest, fixtures, linting, Git, packaging), with five projects: a number-guessing game, a quiz engine, an expense tracker, a bank system and a capstone where you build, test and publish a small package. Three **optional tracks** add 16 more lessons: Data Analysis (NumPy, pandas, charts), Automation & scripting, and Web & APIs. There is a placement test that suggests where to start, a [fast track](web/src/pages/fast-track.astro) for people who already code in another language, and a spaced-review queue that brings finished lessons back at growing gaps. The site works on phones, has had an accessibility pass, and can be installed and used offline. See [docs/PLAN.md](docs/PLAN.md) for the roadmap.
+
+## Optional tracks
+
+After the core path (or any time you want a practical detour) there are three optional tracks. They are not part of the core progress count, the placement test or the fast track.
+
+- **Data Analysis:** NumPy, pandas (selecting, grouping, cleaning), a small sales-analysis project and Matplotlib charts.
+- **Automation & scripting:** command-line programs with `argparse`, files and folders in bulk, `subprocess`, retries and scheduling, and a file-organiser project.
+- **Web & APIs:** how HTTP works, JSON APIs, calling a web service and building a tiny JSON API with only the standard library.
+
+In the browser, the Data Analysis lessons download NumPy and pandas the first time (a few megabytes). Lessons that need real network, subprocesses or a chart you can see are marked as needing your own computer.
+
+## Use it offline
+
+On the home page, **Download for offline** saves Python itself (about 15 MB with NumPy and pandas). After that the whole course, including running and checking code, works without a connection, and your browser can install it as an app. Your progress always stays in your browser.
 
 ## How learning works here
 
@@ -28,6 +42,9 @@ source .venv/bin/activate
 .venv\Scripts\Activate.ps1
 
 pip install -r requirements.txt
+
+# Only if you want the optional Data Analysis track (NumPy, pandas, Matplotlib):
+pip install -r requirements-tracks.txt
 ```
 
 Each lesson is a folder under `exercises/`:
@@ -47,6 +64,7 @@ python -m learn check           # run the checks for your current lesson (a pass
 python -m learn hint            # reveal one hint at a time
 python -m learn status          # your progress, module by module
 python -m learn list            # every lesson, with the finished ones ticked
+python -m learn tracks          # the optional tracks; "python -m learn next data" continues one
 ```
 
 `check` and `hint` also accept a lesson number from `list`, or a word from its name (`python -m learn check variables`). Your progress is saved in `.learn-progress.json`, which Git ignores.
@@ -67,7 +85,7 @@ Tip: work on your own branch (`git switch -c my-answers`) or in a fork, so your 
 | `exercises/` | Local track, **generated** from `content/` (do not edit by hand, except `conftest.py`) |
 | `web/` | The website (Astro) and the in-browser Python runner (Pyodide) |
 | `learn/` | The `python -m learn` command-line guide for the local track |
-| `tools/` | Python scripts that validate lessons and generate `exercises/` |
+| `tools/` | Python scripts that validate lessons, generate `exercises/` and scaffold new lessons (`new_lesson.py`) |
 | `docs/` | Plan, content style guide |
 
 ## Contributing
@@ -77,7 +95,8 @@ Lessons, fixes and ideas are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) and
 Quick start for contributors:
 
 ```bash
-pip install -r requirements.txt
+pip install -r requirements.txt -r requirements-tracks.txt
+python tools/new_lesson.py "Title" --module 03-data-structures   # start a new lesson from a template
 python tools/validate_content.py          # are all lessons well formed? (also runs the placement and review questions to verify their answers)
 python tools/build_exercises.py           # regenerate exercises/ after editing content/
 python tools/check_solutions.py           # every solution passes, every starter fails

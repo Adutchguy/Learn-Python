@@ -1,0 +1,22 @@
+name: Idea for a lesson or track
+description: Suggest a topic, an exercise or a new optional track.
+labels: ["idea"]
+body:
+  - type: input
+    id: topic
+    attributes:
+      label: Topic
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Who is it for and why does it matter?
+      description: What would a learner be able to do afterwards that they cannot do now?
+    validations:
+      required: true
+  - type: textarea
+    id: exercise
+    attributes:
+      label: A small exercise (optional)
+      description: What would the learner write, and how would we check it?

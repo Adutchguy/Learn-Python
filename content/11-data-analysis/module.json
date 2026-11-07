@@ -1,0 +1,5 @@
+{
+  "title": "Data Analysis",
+  "description": "Use NumPy and pandas to load, clean, summarise and chart data: the everyday toolkit of data work. Runs in your browser (charts need your own computer).",
+  "optional": true
+}

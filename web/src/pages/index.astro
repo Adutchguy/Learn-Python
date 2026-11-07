@@ -1,12 +1,18 @@
 ---
 import Base from "../layouts/Base.astro";
-import { loadCourse, flattenLessons, loadReviewQuestions } from "../lib/course";
+import { loadCourse, flattenLessons, coreLessons, loadReviewQuestions, pyodideVersion } from "../lib/course";
 import { REPO_URL, url } from "../lib/paths";
 
 const modules = await loadCourse();
-const all = flattenLessons(modules);
+const coreModules = modules.filter((m) => !m.optional);
+const trackModules = modules.filter((m) => m.optional);
+const all = coreLessons(modules);
+const trackLessonCount = flattenLessons(trackModules).length;
 const first = all[0];
 const totalMinutes = all.reduce((sum, l) => sum + l.minutes, 0);
+// Packages that browser lessons preload, so the offline download can include them.
+const browserPackages = [...new Set(flattenLessons(modules).filter((l) => !l.localOnly).flatMap((l) => l.packages))].sort();
+const pyodideBase = `https://cdn.jsdelivr.net/pyodide/v${pyodideVersion()}/full/`;
 // Just enough for the home page to count how many review questions are due.
 const reviewIndex = JSON.stringify(loadReviewQuestions().map((q) => ({ id: q.id, lesson: q.lesson }))).replace(/</g, "\\u003c");
 ---
@@ -46,9 +52,12 @@ const reviewIndex = JSON.stringify(loadReviewQuestions().map((q) => ({ id: q.id,
 
   <section>
     <h2>The course</h2>
-    <p class="muted">{all.length} lessons so far, about {totalMinutes} minutes in total. More are on the way.</p>
+    <p class="muted">
+      {all.length} lessons in {coreModules.length} modules, about {Math.round(totalMinutes / 60)} hours in total.
+      {trackLessonCount > 0 && <span> Plus {trackLessonCount} lessons in optional tracks, below.</span>}
+    </p>
     {
-      modules.map((mod) => (
+      coreModules.map((mod) => (
         <div class="module">
           <h3>
             <span class="module-number">Module {mod.number}</span> {mod.title}
@@ -60,6 +69,7 @@ const reviewIndex = JSON.stringify(loadReviewQuestions().map((q) => ({ id: q.id,
                 <span class="check" aria-hidden="true" />
                 <a href={lesson.href}>{lesson.title}</a>
                 <span class="sr-status sr-only" />
+                {lesson.localOnly && <span class="badge">own computer</span>}
                 <span class="muted minutes">{lesson.minutes} min</span>
               </li>
             ))}
@@ -67,6 +77,47 @@ const reviewIndex = JSON.stringify(loadReviewQuestions().map((q) => ({ id: q.id,
         </div>
       ))
     }
+  </section>
+
+  {
+    trackModules.length > 0 && (
+      <section id="tracks">
+        <h2>Optional tracks</h2>
+        <p class="muted">
+          Finished the basics (or at least Module 6)? These tracks apply Python to real jobs. They are never required.
+          Lessons marked "own computer" need the <a href={`${REPO_URL}#work-on-your-own-computer`}>local track</a>.
+        </p>
+        {trackModules.map((mod) => (
+          <div class="module track" data-track={mod.slug}>
+            <h3>{mod.title}</h3>
+            <p class="muted">{mod.description}</p>
+            <ol class="lesson-list">
+              {mod.lessons.map((lesson) => (
+                <li data-lesson-id={lesson.id} data-optional="true">
+                  <span class="check" aria-hidden="true" />
+                  <a href={lesson.href}>{lesson.title}</a>
+                  <span class="sr-status sr-only" />
+                  {lesson.localOnly && <span class="badge">own computer</span>}
+                  <span class="muted minutes">{lesson.minutes} min</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+      </section>
+    )
+  }
+
+  <section id="offline" class="your-progress" data-pyodide-base={pyodideBase} data-packages={browserPackages.join(",")}>
+    <h2>Use it offline</h2>
+    <p class="muted">
+      Download Python once (about 15 MB) and the course works without a connection. You can also install it as an app
+      from your browser's menu.
+    </p>
+    <p class="row">
+      <button id="btn-offline" type="button" class="button">Download for offline</button>
+    </p>
+    <p id="offline-status" class="notice" role="status" aria-live="polite"></p>
   </section>
 
   <section class="your-progress">

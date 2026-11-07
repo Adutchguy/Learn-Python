@@ -1,0 +1,36 @@
+name: Problem with a lesson
+description: Something is wrong, unclear or hard to follow in a lesson, or a check rejects a correct answer.
+labels: ["lesson"]
+body:
+  - type: input
+    id: lesson
+    attributes:
+      label: Which lesson?
+      description: The title, or the folder name such as 03-data-structures/01-lists.
+    validations:
+      required: true
+  - type: dropdown
+    id: kind
+    attributes:
+      label: What kind of problem is it?
+      options:
+        - The explanation is confusing or wrong
+        - A check rejects a correct answer
+        - A check accepts a wrong answer
+        - A hint or message is unhelpful
+        - It does not work in my browser or on my computer
+        - Something else
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: What happened?
+      description: If it is a checking problem, paste the code you wrote and the message you saw. Confusing wording counts as a bug, so please say where you got stuck.
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where are you using it?
+      description: Browser and device, or "own computer" with your Python version.

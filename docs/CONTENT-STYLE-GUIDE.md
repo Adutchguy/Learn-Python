@@ -12,6 +12,8 @@ content/<NN-module>/<NN-lesson>/
 └── test_exercise.py
 ```
 
+The quickest way to start is `python tools/new_lesson.py "Title" --module <module>`, which creates these files with the numbering and prerequisite filled in (see [CONTRIBUTING.md](../CONTRIBUTING.md)).
+
 Folder names are `NN-lowercase-words` (for example `03-data-structures/02-dictionaries`). The numbers set the order. A lesson id is `<module>/<lesson>`, for example `01-foundations/02-variables`.
 
 ## Frontmatter (`lesson.md`)
@@ -32,7 +34,16 @@ hints:                               # exactly three, each a little more reveali
 
 Quote any frontmatter value that contains `:`, `*` or `#` (for example `concepts: ["*args"]`); the validator reports invalid YAML with a hint.
 
-Optional: `broken_starter: true` allows a `starter.py` that does not even parse (only for lessons about fixing errors). Unknown keys are rejected.
+Optional keys:
+
+- `broken_starter: true` allows a `starter.py` that does not even parse (only for lessons about fixing errors).
+- `packages: [numpy, pandas]` lists the third-party packages the lesson needs. Only `numpy`, `pandas` and `matplotlib` are allowed. In the browser, Pyodide downloads them before the lesson starts (the first time takes a while, and the page says so). Locally they come from `requirements-tracks.txt`. A lesson whose output cannot be seen in the browser (for example a saved chart) should also be `local_only: true`.
+
+Unknown keys are rejected.
+
+## Optional tracks
+
+A module whose `module.json` contains `"optional": true` is an **optional track** (Data Analysis, Automation & scripting, Web & APIs). Tracks are listed after the core course, are never counted in the core progress, and are left out of the placement test and the fast track. A core lesson may not list a track lesson in `prereqs`; a track lesson may build on core lessons. Give each track lesson review questions like any other lesson. Keep project lessons at the end of a track and title them `Project: ...`.
 
 ## Lesson body
 
@@ -99,7 +110,7 @@ Patch it in the test with `monkeypatch.setattr("builtins.input", lambda prompt="
 
 ## `local_only` lessons
 
-Browsers cannot provide real network sockets, subprocesses or threads. Lessons about those topics set `local_only: true`. They appear on the website with instructions to use the local track, and the browser-runner tests skip them. Their tests may use any pytest feature. In practice that means `parametrize`, fixtures, `skip`, `asyncio.run`, Git, packaging tools and anything else the in-browser pytest cannot do.
+Browsers cannot provide real network sockets, subprocesses or threads. Lessons about those topics set `local_only: true`. When a lesson needs a server, start one inside the test on `127.0.0.1` (for example with `http.server`) rather than calling a real website, so the checks never depend on the internet or on someone else's service. They appear on the website with instructions to use the local track, and the browser-runner tests skip them. Their tests may use any pytest feature. In practice that means `parametrize`, fixtures, `skip`, `asyncio.run`, Git, packaging tools and anything else the in-browser pytest cannot do.
 
 ## Teaching testing and code quality
 
@@ -113,6 +124,7 @@ Browsers cannot provide real network sockets, subprocesses or threads. Lessons a
 - [ ] `python tools/build_exercises.py` has been run and its output committed
 - [ ] `python tools/check_solutions.py` passes
 - [ ] `cd web && npm test` passes
+- [ ] A new lesson has one or two questions in `content/review/questions.json`
 - [ ] You read the lesson in the browser (`npm run dev`) and it makes sense to a complete beginner
 
 ## Placement-test questions

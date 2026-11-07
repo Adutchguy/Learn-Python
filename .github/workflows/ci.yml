@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: "3.13"
           cache: pip
-      - run: pip install -r requirements.txt
+      - run: pip install -r requirements.txt -r requirements-tracks.txt
       - name: Validate lesson files
         run: python tools/validate_content.py
       - name: Local-track exercises are up to date
