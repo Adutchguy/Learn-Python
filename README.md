@@ -2,7 +2,7 @@
 
 A free, open-source way to learn Python quickly and thoroughly, with **no sign-up and nothing to pay for**.
 
-- **In your browser:** short interactive lessons with a built-in code editor. Python runs right in the page, so there is nothing to install. **Live site: https://adutchguy.github.io/Learn-Python/** (see [Publishing](#publishing-the-website) for how it is deployed).
+- **In your browser:** short interactive lessons with a built-in code editor. Python runs right in the page, so there is nothing to install. **Live site: https://adutchguy.github.io/Learn-Python/**
 - **On your own computer:** the same lessons as ordinary Python files, checked with `pytest`.
 
 Both tracks come from the same lesson files, so they always match.
