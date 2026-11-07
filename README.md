@@ -2,12 +2,12 @@
 
 A free, open-source way to learn Python quickly and thoroughly, with **no sign-up and nothing to pay for**.
 
-- **In your browser:** short interactive lessons with a built-in code editor. Python runs right in the page, so there is nothing to install. *(Live site: https://adutchguy.github.io/Learn-Python/ once GitHub Pages is switched on, see [Publishing](#publishing-the-website).)*
+- **In your browser:** short interactive lessons with a built-in code editor. Python runs right in the page, so there is nothing to install. **Live site: https://adutchguy.github.io/Learn-Python/** (see [Publishing](#publishing-the-website) for how it is deployed).
 - **On your own computer:** the same lessons as ordinary Python files, checked with `pytest`.
 
 Both tracks come from the same lesson files, so they always match.
 
-> **Status:** usable and feature-complete for the first release. 72 core lessons take you from Start Here through Pythonic Python (iterators, generators, decorators, `functools`, type hints, async) and Testing & Quality (pytest, fixtures, linting, Git, packaging), with five projects: a number-guessing game, a quiz engine, an expense tracker, a bank system and a capstone where you build, test and publish a small package. Three **optional tracks** add 16 more lessons: Data Analysis (NumPy, pandas, charts), Automation & scripting, and Web & APIs. There is a placement test that suggests where to start, a [fast track](web/src/pages/fast-track.astro) for people who already code in another language, and a spaced-review queue that brings finished lessons back at growing gaps. The site works on phones, has had an accessibility pass, and can be installed and used offline. See [docs/PLAN.md](docs/PLAN.md) for the roadmap.
+> **Status:** all planned features are built and the site is live. The lessons are still awaiting full review and testing [report anything that is wrong or confusing](https://github.com/Adutchguy/Learn-Python/issues). 72 core lessons take you from Start Here through Pythonic Python (iterators, generators, decorators, `functools`, type hints, async) and Testing & Quality (pytest, fixtures, linting, Git, packaging), with five projects: a number-guessing game, a quiz engine, an expense tracker, a bank system and a capstone where you build, test and publish a small package. Three **optional tracks** add 16 more lessons: Data Analysis (NumPy, pandas, charts), Automation & scripting, and Web & APIs. There is a placement test that suggests where to start, a [fast track](web/src/pages/fast-track.astro) for people who already code in another language, and a spaced-review queue that brings finished lessons back at growing gaps. The site works on phones (no sideways scrolling, 44 px tap targets), has had an accessibility pass (keyboard use, screen-reader labels, WCAG AA colour contrast in light and dark mode, reduced-motion support), and can be installed as an app and used offline. See [docs/PLAN.md](docs/PLAN.md) for the roadmap.
 
 ## Optional tracks
 
@@ -113,7 +113,7 @@ Web development needs Node.js 22.23.4 or newer.
 
 ## Publishing the website
 
-The site deploys automatically from `main` using GitHub Actions. One-time setup: in the repository on GitHub, open **Settings → Pages → Build and deployment** and set **Source** to **GitHub Actions**. The site then appears at `https://adutchguy.github.io/Learn-Python/`.
+The site deploys automatically from `main` using GitHub Actions. One-time setup: in the repository on GitHub, open **Settings → Pages → Build and deployment** and set **Source** to **GitHub Actions**. The site then appears at `https://adutchguy.github.io/Learn-Python/` (it is live now).
 
 ## Licenses
 
